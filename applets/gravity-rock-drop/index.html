@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כבידה בתנועה</title>
+<link rel="stylesheet" href="styles.css?v=3">
+</head>
+<body>
+<div class="starfield" id="starfield"></div>
+<main class="app">
+  <header>
+    <h1>כבידה בתנועה: כדור הארץ, הירח והחלל</h1>
+    <p>צפו מה קורה לדגימת סלע כשהיא משוחררת מאותו הגובה בשלוש סביבות שונות.<br><span>לחצו על "שחרר סלע" כדי להתחיל!</span></p>
+  </header>
+  <section class="cards">
+    <article class="gravity-card">
+      <div class="card-head">
+        <img class="planet-icon" src="assets/icon-earth.webp" alt="כדור הארץ">
+        <h2>כדור הארץ</h2><p>כבידה חזקה</p>
+      </div>
+      <div class="scene">
+        <img class="scene-bg" src="assets/earth-background.png" alt="">
+        <div class="gravity-rock" id="earthRock"><img src="assets/rock.png" alt=""></div>
+        <div class="impact-dust" id="earthDust"></div>
+        <div class="lunar-spray" id="earthSpray"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </article>
+    <article class="gravity-card">
+      <div class="card-head">
+        <img class="planet-icon" src="assets/icon-moon.webp" alt="הירח">
+        <h2>הירח</h2><p>כבידה חלשה</p>
+      </div>
+      <div class="scene">
+        <img class="scene-bg" src="assets/moon-background.png" alt="">
+        <div class="gravity-rock" id="moonRock"><img src="assets/rock.png" alt=""></div>
+        <div class="impact-dust" id="moonDust"></div>
+        <div class="lunar-spray" id="moonSpray"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </article>
+    <article class="gravity-card">
+      <div class="card-head">
+        <img class="planet-icon" src="assets/icon-space.webp" alt="חללית">
+        <h2>חללית (בדרך)</h2><p>מיקרו-כבידה</p>
+      </div>
+      <div class="scene">
+        <img class="scene-bg" src="assets/spaceship-background.png" alt="">
+        <div class="gravity-rock float-space" id="spaceRock"><img src="assets/rock.png" alt=""></div>
+      </div>
+    </article>
+  </section>
+  <div class="controls">
+    <button id="dropButton" type="button" aria-label="שחרר סלע">
+      <img class="button-bg" src="assets/button-drop.png" alt="">
+      <img class="button-rock" id="buttonRock" src="assets/rock.png" alt="">
+      <span id="buttonLabel">שחרר סלע</span>
+    </button>
+  </div>
+</main>
+<script src="app.js?v=3"></script>
+</body>
+</html>

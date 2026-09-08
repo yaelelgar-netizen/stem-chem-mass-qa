@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>לומדת מסה — STEM</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1 class="sr-only">לומדת מסה — מדידות מסה בתחנת העגינה על פני הירח</h1>
+<div id="app" class="stage" role="main" aria-label="לומדת מסה">
+
+  <!-- ===== SCREEN 1 — PPT 2-3 — opening video (stub: still + dialogue as captions) ===== -->
+  <section class="screen active" data-screen="1">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-2.jpg" alt="גל ושירה במעבדת תחנת העגינה, ארבע דגימות ירח על השולחן">
+    <img class="video-logo" src="assets/images/logo-moe.png" alt="משרד החינוך – מינהל חדשנות וטכנולוגיה">
+    <div class="nametag" data-reveal data-reveal-order="0" style="position:absolute; left:65px; top:698px; width:401px;"><b>גל</b><span>מפקד תחנת העגינה</span></div>
+    <div class="nametag" data-reveal data-reveal-order="0" style="position:absolute; left:1500px; top:698px; width:401px;"><b>שירה</b><span>מדענית חומרים</span></div>
+    <div class="video-cap" data-reveal data-reveal-order="1" style="left:260px; right:auto; width:1400px; max-width:1400px; transform:none; bottom:56px; font-size:28px;"><p style="margin:0 0 8px;">זוכרים אותנו? במעבדת תחנת העגינה לקחנו דגימות מהירח ומדדנו את נפחן כדי שנוכל לארוז אותן במדויק.</p><p style="margin:0 0 8px;">נתוני הנפח של הדגימות הושלמו, אך המקום באחסון הוא רק חלק מהסיפור. כעת נשאר לנו לבצע את כל מדידות המשקל כדי לוודא שאיננו חורגים ממגבלת המטען של המעבורת.</p><p style="margin:0 0 8px;">אתה מתכוון כנראה למדידה של המסה ולא של המשקל. אתה מבין את ההבדל ביניהם?</p></div>
+  </section>
+
+  <!-- ===== SCREEN 2 — PPT 4-5 — sample explorer (gated until all four are opened) ===== -->
+  <section class="screen" data-screen="2">
+    <div class="smeta" data-type="content" data-gate="explore" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="שולחן העבודה במעבדה ועליו ארבע דגימות הסלע מהירח">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:1300px; top:16px; width:602px; height:158px;">
+      <img class="bubble__img" src="assets/images/bubble-4.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:28px;"><p>זוכרים את הדגימות?<br>לחצו על כל דגימה כדי לקבל מידע.</p></div>
+    </div>
+    <button class="sample" type="button" data-key="regolith" aria-expanded="false" aria-label="רֶגוֹלִית - אָבָק יְרֵחִי — לחצו לקבלת מידע" data-reveal data-reveal-order="1" style="position:absolute; left:110px; top:250px; width:281px; height:395px;">
+      <img class="sample__img" src="assets/images/card-regolith.png" alt="">
+      <span class="sample__name">רֶגוֹלִית - אָבָק יְרֵחִי</span>
+    </button>
+    <div class="sample__info" data-for="regolith" style="position:absolute; left:51px; top:676px; width:399px;" hidden>
+      <button class="sample__close" type="button" aria-label="סגירה"><img src="assets/images/close-x.png" alt=""></button>
+      השכבה העליונה של פני הירח, המורכבת מאבק, גרגרי סלע ושברי אבנים קטנים שנוצרו במשך מיליארדי שנים מפגיעות של מטאוריטים.
+    </div>
+    <button class="sample" type="button" data-key="anor" aria-expanded="false" aria-label="אָנוֹרְתוֹזִיט — לחצו לקבלת מידע" data-reveal data-reveal-order="2" style="position:absolute; left:586px; top:250px; width:281px; height:395px;">
+      <img class="sample__img" src="assets/images/card-anor.png" alt="">
+      <span class="sample__name">אָנוֹרְתוֹזִיט</span>
+    </button>
+    <div class="sample__info" data-for="anor" style="position:absolute; left:527px; top:676px; width:399px;" hidden>
+      <button class="sample__close" type="button" aria-label="סגירה"><img src="assets/images/close-x.png" alt=""></button>
+      סלע גבישי בהיר מאוד שנוצר בתקופה קדומה ומצוי ברוב הרמות הגבוהות של הירח (האזורים הבהירים).
+    </div>
+    <button class="sample" type="button" data-key="vesic" aria-expanded="false" aria-label="בָּזֶלֶת נַקְבּוּבִית — לחצו לקבלת מידע" data-reveal data-reveal-order="3" style="position:absolute; left:1061px; top:250px; width:281px; height:395px;">
+      <img class="sample__img" src="assets/images/card-vesic.png" alt="">
+      <span class="sample__name">בָּזֶלֶת נַקְבּוּבִית</span>
+    </button>
+    <div class="sample__info" data-for="vesic" style="position:absolute; left:1002px; top:676px; width:399px;" hidden>
+      <button class="sample__close" type="button" aria-label="סגירה"><img src="assets/images/close-x.png" alt=""></button>
+      סלע בזלתי שיש בו חללים קטנים (״בועות״) שנוצרו כשגזים שהיו בתוך הלבה נלכדו בתוך הסלע בזמן התמצקות הלבה.
+    </div>
+    <button class="sample" type="button" data-key="mare" aria-expanded="false" aria-label="בָּזֶלֶת מָארֶה — לחצו לקבלת מידע" data-reveal data-reveal-order="4" style="position:absolute; left:1537px; top:250px; width:281px; height:395px;">
+      <img class="sample__img" src="assets/images/card-mare.png" alt="">
+      <span class="sample__name">בָּזֶלֶת מָארֶה</span>
+    </button>
+    <div class="sample__info" data-for="mare" style="position:absolute; left:1478px; top:676px; width:399px;" hidden>
+      <button class="sample__close" type="button" aria-label="סגירה"><img src="assets/images/close-x.png" alt=""></button>
+      סלע געשי כהה שנוצר מלבה שהתקררה על פני הירח. הוא עשיר בברזל ומגנזיום ומצוי באזורים הכהים שעל הירח.
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 3 — PPT 6 — gravity applet (gated on APPLET_DONE) ===== -->
+  <section class="screen" data-screen="3">
+    <div class="smeta" data-type="applet" data-gate="applet" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <div class="stitle" style="position:absolute; left:0px; top:22px; width:1920px; color:#fff; font-size:38px; font-weight:800; text-align:center; text-shadow:0 2px 12px rgba(0,0,0,.85);">כוח הכבידה והמשקל</div>
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:620px; top:96px; width:1050px; height:112px;">
+      <img class="bubble__img" src="assets/images/bubble-6-head.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:28px;"><p>צפו בהדמיה הבאה של אותו הסלע בשלוש סביבות בעלות <button class="gloss-link" type="button" aria-expanded="false" aria-controls="tip-grav">תנאי כבידה<span class="gloss-link__icon">▾</span></button> שונים.</p></div>
+    </div>
+    <span class="gloss-tip" id="tip-grav" role="tooltip" style="position:absolute; left:494px; top:228px; width:933px;" hidden>כוח הכבידה הוא אחד הכוחות היסודיים בטבע. כל גֶּרֶם שמים, כמו הירח, השמש וכדור הארץ, מפעיל כוח כבידה על גופים הנמצאים בסביבתו. עוצמת כוח הכבידה תלויה במסה של גרם השמים ובמרחק ממנו. המשקל הוא כוח הכבידה שגֶּרֶם שמים מפעיל על גוף מסוים.</span>
+    <iframe class="applet-frame" src="applets/gravity-rock-drop/index.html?embed=1&v=2" title="יישומון: כבידה בתנועה — כדור הארץ, הירח והחלל" allowtransparency="true" scrolling="no" data-reveal data-reveal-order="1" style="position:absolute; left:0px; top:200px; width:1920px; height:860px;"></iframe>
+  </section>
+
+  <!-- ===== SCREEN 4 — PPT 7 — dialogue: Gal then Shira ===== -->
+  <section class="screen" data-screen="4">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-7.jpg" alt="הסלע מוצג בשלושה תנאי כבידה: כדור הארץ, הירח וחללית">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:356px; top:80px; width:552px; height:216px;">
+      <img class="bubble__img" src="assets/images/bubble-7-gal.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:27px;"><p>הבנתי, המשקל של הסלע תלוי בעוצמת הכבידה, ולכן הוא משתנה ממקום למקום. אבל מה עם המסה?</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="1" data-reveal-delay="2200" style="position:absolute; left:781px; top:260px; width:448px; height:200px;">
+      <img class="bubble__img" src="assets/images/bubble-7-shira.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:27px;"><p>מה אתה חושב, גל? האם כמות החומר שבסלע השתנתה במעבר ממקום למקום?</p></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 5 — PPT 8-9 — Q1, seven dropdowns ===== -->
+  <section class="screen" data-screen="5">
+    <div class="smeta" data-type="question" data-qid="q1" data-answer="1" data-points="12.5" data-fb-correct="נכון! כמות החומר (המסה) נשמרת, ואילו המשקל תלוי בעוצמת הכבידה ולכן משתנה ממקום למקום." data-fb-incorrect="נכון חלקית / כל הכבוד על הניסיון – לחצו לקבלת התשובה הנכונה" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <div class="chip" style="position:absolute; left:26px; top:26px;">שיטת<br>המשקולות</div>
+    <ol class="qprogress" data-active="1" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:155px; width:1630px; height:760px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:196px; width:1480px;"><h2>שאלה 1:</h2><p>עִזרו לגל להבין את ההבדל בין מסה (כמות החומר) לבין משקל (כוח הכבידה שפועל על הגוף).</p><p class="q-bold">השלימו את החסר בפסקה הבאה:</p></div>
+    <img src="assets/images/img-8-q1.png" alt="הסלע בשלושה מצבים: כדור הארץ, ירח וחללית" style="position:absolute; left:144px; top:534px; width:417px; height:461px;">
+    <div class="qfill" style="position:absolute; left:600px; top:350px; width:1180px;"><p>כשמעבירים את הסלע מהירח לכדור הארץ, כמות החומר שבתוכו <select class="qselect" data-answer="לא משתנה" aria-label="השלמה 1"><option value=""> </option><option value="משתנה">משתנה</option><option value="לא משתנה">לא משתנה</option></select>.</p><p>אם לא מוסיפים לגוף חומר ולא גורעים ממנו חומר, כמות החומר בגוף, כלומר ה<select class="qselect" data-answer="מסה" aria-label="השלמה 2"><option value=""> </option><option value="מסה">מסה</option><option value="נפח">נפח</option><option value="משקל">משקל</option></select> נשארת קבועה. זהו חוק שימור ה<select class="qselect" data-answer="מסה" aria-label="השלמה 3"><option value=""> </option><option value="מסה">מסה</option><option value="נפח">נפח</option><option value="משקל">משקל</option></select>.</p><p>לעומת זאת, משקלו של הסלע <select class="qselect" data-answer="משתנה" aria-label="השלמה 4"><option value=""> </option><option value="משתנה">משתנה</option><option value="לא משתנה">לא משתנה</option></select> ממקום למקום מפני שכוח הכבידה <select class="qselect" data-answer="שונה" aria-label="השלמה 5"><option value=""> </option><option value="שונה">שונה</option><option value="שווה">שווה</option></select> בין גרמי שמיים שונים. בירח משקלו <select class="qselect" data-answer="קטן יותר מ" aria-label="השלמה 6"><option value=""> </option><option value="קטן יותר מ">קטן יותר מ</option><option value="גדול יותר מ">גדול יותר מ</option><option value="שווה ל">שווה ל</option></select> משקלו בכדור הארץ, ואילו בחללית בדרך מהירח לכדור הארץ אין לו <select class="qselect" data-answer="משקל" aria-label="השלמה 7"><option value=""> </option><option value="משקל">משקל</option><option value="מסה">מסה</option></select> כלל, ולכן הוא מרחף.</p></div>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:1610px; top:760px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:846px; width:1180px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 6 — PPT 10 — Gal, Shira, then the two instrument cards ===== -->
+  <section class="screen" data-screen="6">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:666px; top:49px; width:893px; height:126px;">
+      <img class="bubble__img" src="assets/images/bubble-10-gal.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:28px;"><p>הבנתי את ההבדל בין מסה למשקל. אבל איך אפשר למדוד אותם?</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="1" data-reveal-delay="2200" style="position:absolute; left:389px; top:189px; width:893px; height:126px;">
+      <img class="bubble__img" src="assets/images/bubble-10-shira.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:28px;"><p>משקל מודדים בעזרת <button class="jump" type="button" data-goto="7">מד כוח</button> ומסה מודדים בעזרת מאזניים.</p></div>
+    </div>
+    <div data-reveal data-reveal-order="2" style="position:absolute; left:53px; top:369px; width:898px; height:559px; background:rgba(250,251,252,.93); border-radius:28px;"></div>
+    <div class="slabel" data-reveal data-reveal-order="2" style="position:absolute; left:53px; top:386px; width:898px; font-size:30px; font-weight:800; color:#17223a; text-align:center;">מאזניים</div>
+    <img data-reveal data-reveal-order="2" src="assets/images/scale-card.png" alt="מאזני כפות" style="position:absolute; left:372px; top:560px; width:483px; height:264px;">
+    <div class="slabel" data-reveal data-reveal-order="2" style="position:absolute; left:88px; top:846px; width:830px; font-size:26px; font-weight:700; color:#17223a; text-align:center;">מסה מודדים במאזניים ביחידות של גרם, קילוגרם וכדומה</div>
+    <div data-reveal data-reveal-order="3" style="position:absolute; left:993px; top:369px; width:898px; height:559px; background:rgba(250,251,252,.93); border-radius:28px;"></div>
+    <div class="slabel" data-reveal data-reveal-order="3" style="position:absolute; left:993px; top:386px; width:898px; font-size:30px; font-weight:800; color:#17223a; text-align:center;">מד כוח</div>
+    <img data-reveal data-reveal-order="3" src="assets/images/force-gauge.png" alt="מד כוח" style="position:absolute; left:1196px; top:452px; width:182px; height:417px;">
+    <div class="slabel" data-reveal data-reveal-order="3" style="position:absolute; left:1027px; top:880px; width:830px; font-size:26px; font-weight:700; color:#17223a; text-align:center;">משקל מודדים במד כוח ביחידות של ניוטון</div>
+  </section>
+
+  <!-- ===== SCREEN 7 — PPT 11 — optional detour: force-gauge tabs (back only, no forward) ===== -->
+  <section class="screen" data-screen="7">
+    <div class="smeta" data-type="content" data-gate="deadend" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="מעבדת תחנת העגינה">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:1320px; top:4px; width:600px; height:118px;">
+      <img class="bubble__img" src="assets/images/bubble-11.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:27px;"><p>לחצו על הלשוניות והכירו את מד-הכוח:</p></div>
+    </div>
+    <button class="tab" type="button" data-panel="measures" aria-expanded="false" data-reveal data-reveal-order="1" style="position:absolute; left:1205px; top:148px; width:370px; height:62px;">מה הוא מודד?</button>
+    <div class="tabpanel" data-for="measures" style="position:absolute; left:1190px; top:226px; width:400px;" hidden>
+      <button class="panel__close" type="button" aria-label="סגירה"><img src="assets/images/close-x.png" alt=""></button>
+      מד-הכוח מודד משקל – זהו הכוח שבו גֶּרֶם שמים (כמו כדור הארץ או הירח) מושך אליו גוף או חומר.
+    </div>
+    <button class="tab" type="button" data-panel="works" aria-expanded="false" data-reveal data-reveal-order="1" style="position:absolute; left:773px; top:148px; width:370px; height:62px;">איך הוא עובד?</button>
+    <div class="tabpanel" data-for="works" style="position:absolute; left:758px; top:226px; width:400px;" hidden>
+      <button class="panel__close" type="button" aria-label="סגירה"><img src="assets/images/close-x.png" alt=""></button>
+      בתוך המכשיר יש קפיץ. ככל שהמשיכה של גֶּרֶם השמים (הכבידה) חזקה יותר, הקפיץ נמתח יותר והמספר על הצג עולה.
+    </div>
+    <button class="tab" type="button" data-panel="units" aria-expanded="false" data-reveal data-reveal-order="1" style="position:absolute; left:340px; top:148px; width:370px; height:62px;">יחידות מידה</button>
+    <div class="tabpanel" data-for="units" style="position:absolute; left:325px; top:226px; width:400px;" hidden>
+      <button class="panel__close" type="button" aria-label="סגירה"><img src="assets/images/close-x.png" alt=""></button>
+      בעוד שאת המסה מודדים ביחידות של גרמים, את המשקל מודדים ביחידות של ניוטון
+    </div>
+    <img data-reveal data-reveal-order="2" src="assets/images/img-11.png" alt="מד כוח ובו דגימת סלע — בכדור הארץ ובירח" style="position:absolute; left:332px; top:158px; width:1247px; height:882px;">
+    <div class="slabel" data-reveal data-reveal-order="2" style="position:absolute; left:336px; top:496px; width:590px; font-size:34px; font-weight:800; color:#2f5d3a; text-align:center;">כדור הארץ</div>
+    <div class="slabel" data-reveal data-reveal-order="2" style="position:absolute; left:988px; top:496px; width:590px; font-size:34px; font-weight:800; color:#2f5d3a; text-align:center;">ירח</div>
+    <div class="slabel" data-reveal data-reveal-order="2" style="position:absolute; left:380px; top:660px; width:92px; color:#fff; font-size:25px; font-weight:700; text-align:center; line-height:1.05;">0.57<br><span style="font-size:19px">ניוטון</span></div>
+    <div class="slabel" data-reveal data-reveal-order="2" style="position:absolute; left:1010px; top:678px; width:92px; color:#fff; font-size:23px; font-weight:700; text-align:center; line-height:1.05;">0.095<br><span style="font-size:19px">ניוטון</span></div>
+  </section>
+
+  <!-- ===== SCREEN 8 — PPT 12 — Gal, Shira, then the balance applet (gated on APPLET_DONE) ===== -->
+  <section class="screen" data-screen="8">
+    <div class="smeta" data-type="applet" data-gate="applet" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="שירה וגל ליד מאזני הכפות במעבדה">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:1281px; top:49px; width:276px; height:124px;">
+      <img class="bubble__img" src="assets/images/bubble-12-a.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:27px;"><p>יש לנו מאזניים?</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="1" data-reveal-delay="2200" style="position:absolute; left:388px; top:187px; width:1070px; height:124px;">
+      <img class="bubble__img" src="assets/images/bubble-12-b.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>כן, ישנם סוגים שונים של מאזניים, כמו מאזניים דיגיטליים, מאזני כפות ומאזני כף. אנחנו כאן בירח נשתמש במאזני כפות, אתה יודע כיצד משתמשים בהם?</p></div>
+    </div>
+    <iframe class="applet-frame" src="applets/gravity-scale-lab/index.html?embed=1&v=5" title="יישומון: מדידת מסה במאזני כפות — כדור הארץ מול הירח" allowtransparency="true" scrolling="no" data-reveal data-reveal-order="2" style="position:absolute; left:0px; top:320px; width:1920px; height:756px;"></iframe>
+  </section>
+
+  <!-- ===== SCREEN 9 — PPT 13-14 — Q2, multi-select, applet in a modal ===== -->
+  <section class="screen" data-screen="9">
+    <div class="smeta" data-type="question" data-qid="q2" data-multi="true" data-answer="3,5,6" data-points="12.5" data-fb-correct="נכון! המסה של דגימת הסלep זהה בשני המקומות, והכבידה פועלת באותה מידה על שתי הכפות — ולכן המאזניים מאוזנים בשניהם." data-fb-incorrect="נכון חלקית / כל הכבוד על הניסיון – &lt;button class=&quot;jump&quot; type=&quot;button&quot; data-goto=&quot;10&quot;&gt;לחצו&lt;/button&gt; לקבלת הסבר לתשובה הנכונה." aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <div class="chip" style="position:absolute; left:26px; top:26px;">מדידת מסה<br>במאזניים</div>
+    <ol class="qprogress" data-active="2" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:155px; width:1630px; height:760px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:196px; width:1480px;"><h2>שאלה 2:</h2><p>שירה מניחה את דגימת סלע האנורתוזיט על כף אחת ואת <button class="gloss-link" type="button" aria-expanded="false" aria-controls="tip-stones">אבני המסה<span class="gloss-link__icon">▾</span></button> על הכף השנייה. העזרו ב<button class="jump" type="button" data-modal="scale-modal">יישומון המאזניים</button> המדמה את תהליך מדידת המסה על פני הירח ועל פני כדור הארץ. מה אפשר להסיק מההדמיה?</p><p class="q-bold">סמנו את כל התשובות הנכונות:</p></div>
+    <span class="gloss-tip" id="tip-stones" role="tooltip" style="position:absolute; left:594px; top:330px; width:833px;" hidden>אבני מסה הן הכינוי המדעי המדויק יותר למילה המקובלת "משקולות", מכיוון שבעזרת אבני מסה מודדים את המסה (כמות החומר) ולא את המשקל (כוח הכבידה).</span>
+    <ul class="options options--checks" role="group" aria-label="אפשרויות תשובה" style="position:absolute; left:250px; top:400px; width:1480px;">
+      <li class="option" role="checkbox" tabindex="0" aria-checked="false" data-value="1"><span class="dot"></span><span class="lbl">הירח מושך אליו את הסלע ואת אבני המסה באותה עוצמת כוח כמו כדור הארץ.</span></li>
+      <li class="option" role="checkbox" tabindex="0" aria-checked="false" data-value="2"><span class="dot"></span><span class="lbl">אבני המסה כבדות יותר על הירח כדי לאזן את דגימת הסלע.</span></li>
+      <li class="option" role="checkbox" tabindex="0" aria-checked="false" data-value="3"><span class="dot"></span><span class="lbl">המסה, כמות החומר, של דגימת הסלע זהה על פני כדור הארץ ועל פני הירח.</span></li>
+      <li class="option" role="checkbox" tabindex="0" aria-checked="false" data-value="4"><span class="dot"></span><span class="lbl">מאזני כפות מודדים נפח ולא מסה, ולכן תוצאות המדידה לא מושפעות מכוח הכבידה שמשתנה.</span></li>
+      <li class="option" role="checkbox" tabindex="0" aria-checked="false" data-value="5"><span class="dot"></span><span class="lbl">כשאותה כמות חומר מונחת על שתי כפות המאזניים, הירח מושך את שתיהן במידה שווה.</span></li>
+      <li class="option" role="checkbox" tabindex="0" aria-checked="false" data-value="6"><span class="dot"></span><span class="lbl">כשאותה כמות חומר מונחת על שתי כפות המאזניים, כדור הארץ מושך את שתיהן במידה שווה.</span></li>
+    </ul>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:1600px; top:762px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:846px; width:1180px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+    <div class="modal" id="scale-modal" hidden>
+      <div class="modal__box">
+        <button class="modal__close" type="button" aria-label="סגור">✕</button>
+        <iframe src="applets/gravity-scale-lab/index.html?v=4" title="יישומון: מדידת מסה במאזני כפות" allowtransparency="true"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 10 — PPT 15 — video 2 (stub: still + narration as captions) ===== -->
+  <section class="screen" data-screen="10">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-15.jpg" alt="מאזני הכפות מאוזנים בירח ובכדור הארץ">
+    <div class="video-cap" data-reveal data-reveal-order="0" style="left:260px; right:auto; width:1400px; max-width:1400px; transform:none; bottom:56px; font-size:28px;"><p style="margin:0 0 8px;">המדידה של הסלע על המאזניים בירח ובכדור הארץ היא ראיה מדעית לכך שהמסה (בניגוד למשקל) היא תכונה קבועה של החומר.</p><p style="margin:0 0 8px;">הירח מושך את הסלע ואת אבני המסה בכוח קטן יותר מאשר כדור הארץ (המשקל בירח קטן מהמשקל בכדור הארץ).</p><p style="margin:0 0 8px;">עם זאת, מכיוון שהמסה של הסלע ושל אבני המסה זהה, הם נמשכים במידה שווה, ולכן המאזניים מאוזניים.</p></div>
+  </section>
+
+  <!-- ===== SCREEN 11 — PPT 16 — data report gains the anorthosite reading ===== -->
+  <section class="screen" data-screen="11">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-16.jpg" alt="גל רושם את תוצאת המדידה ליד מאזני הכפות">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:1007px; top:214px; width:498px; height:201px;">
+      <img class="bubble__img" src="assets/images/bubble-16.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:27px;"><p>מסת דגימת סלע אנורתוזיט נמדדה. נוסיף את הנתון לדוח הנתונים:</p></div>
+    </div>
+    <div class="report report--4row" data-reveal data-reveal-order="1" style="position:absolute; left:72px; top:0px; width:356px; height:355px;">
+      <div class="report__title">דוח נתונים</div>
+      <div class="report__head"><span style="width:38%">מדידת המסה</span><span style="width:62%">דגימת הסלע</span></div>
+      <div class="report__row"><span class="val" style="width:38%" data-reveal data-reveal-order="2">57 גרם</span><span style="width:62%">אָנוֹרְתוֹזִיט</span></div>
+      <div class="report__row"><span class="val" style="width:38%"></span><span style="width:62%">בָּזֶלֶת מָארֶה</span></div>
+      <div class="report__row"><span class="val" style="width:38%"></span><span style="width:62%">רֶגוֹלִית</span></div>
+      <div class="report__row"><span class="val" style="width:38%"></span><span style="width:62%">בָּזֶלֶת נַקְבּוּבִית</span></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 12 — PPT 17 — dialogue: Gal then Shira ===== -->
+  <section class="screen" data-screen="12">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-17.jpg" alt="גל ושירה מנפצים גוש סלע בזלת בפטיש">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:272px; top:77px; width:373px; height:224px;">
+      <img class="bubble__img" src="assets/images/bubble-17-gal.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:26px;"><p>עיקרון המדידה במאזניים ברור יותר עכשיו. בואו נמשיך במדידות.</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="1" data-reveal-delay="2200" style="position:absolute; left:1401px; top:238px; width:295px; height:177px;">
+      <img class="bubble__img" src="assets/images/bubble-17-shira.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:26px;"><p>נמשיך עם דגימת סלע בזלת מארה.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 13 — PPT 18-19 — Q3, three dropdowns ===== -->
+  <section class="screen" data-screen="13">
+    <div class="smeta" data-type="question" data-qid="q3" data-answer="1" data-points="12.5" data-fb-correct="א-ב: עבור הסלע הגדול, נבחר ביחידת המידה ״קילוגרם״ כיוון שזו יחידה המתאימה למסות גדולות. עבור האבן הקטנה, נבחר ביחידת מידה ״גרם״ כדי להתאים את המדידה לסדר הגודל של דגימת הסלע. ג: כשהסלע נשבר לחלקים קטנים, כמות החומר הכוללת לא השתנתה, ולכן מסת החלקים יחד תהיה שווה בדיוק למסת הסלע השלם – זהו חוק שימור המסה." data-fb-incorrect="נכון חלקית / כל הכבוד על הניסיון – לחצו לקבלת התשובה הנכונה." aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <ol class="qprogress" data-active="3" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:155px; width:1630px; height:760px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:196px; width:1180px;"><h2>שאלה 3:</h2><p>כדי לקחת דגימת סלע בזלת מהירח, שירה וגל שברו גוש סלע גדול באמצעות פטיש. הסלע התנפץ למספר חלקים קטנים, כמתואר בתמונה.</p><p class="q-bold">קראו את השאלות ובחרו את התשובה הנכונה בכל סעיף:</p></div>
+    <div class="slabel" style="position:absolute; left:1420px; top:214px; width:300px; font-size:26px; font-weight:700; color:#17223a; text-align:center;">לפני ניפוץ</div>
+    <img src="assets/images/img-18-whole.png" alt="גוש הסלע השלם" style="position:absolute; left:1466px; top:258px; width:229px; height:205px;">
+    <div class="slabel" style="position:absolute; left:1420px; top:502px; width:300px; font-size:26px; font-weight:700; color:#17223a; text-align:center;">אחרי ניפוץ</div>
+    <img src="assets/images/img-18-broken.png" alt="הסלע לאחר שהתנפץ לחלקים" style="position:absolute; left:1422px; top:556px; width:318px; height:202px;">
+    <div class="slabel" style="position:absolute; left:1500px; top:776px; width:240px; font-size:24px; font-weight:700; color:#17223a; text-align:center;">אבן קטנה</div>
+    <div class="qfill" style="position:absolute; left:250px; top:420px; width:1120px;"><p>1. באיזו יחידת מידה הייתם מודדים את מסת הסלע הגדול? <select class="qselect" data-answer="ק&quot;ג" aria-label="השלמה 1"><option value=""> </option><option value="ק&quot;ג">ק"ג</option><option value="גרם">גרם</option></select></p><p>2. באיזו יחידת מידה הייתם מודדים אבן קטנה שהתפרקה מהסלע הגדול? <select class="qselect" data-answer="גרם" aria-label="השלמה 2"><option value=""> </option><option value="ק&quot;ג">ק"ג</option><option value="גרם">גרם</option></select></p><p>3. מה ניתן לומר על המסה של החלקים שהתפרקו מתוך הסלע הגדול?</p><p>מסת החלקים יחד <select class="qselect" data-answer="שווה ל" aria-label="השלמה 3"><option value=""> </option><option value="גדולה מ">גדולה מ</option><option value="קטנה מ">קטנה מ</option><option value="שווה ל">שווה ל</option></select> מסת הסלע השלם.</p></div>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:250px; top:800px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:846px; width:1180px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 14 — PPT 20 — data report gains the mare basalt reading ===== -->
+  <section class="screen" data-screen="14">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-20.jpg" alt="שירה רושמת את תוצאת המדידה">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:972px; top:201px; width:498px; height:201px;">
+      <img class="bubble__img" src="assets/images/bubble-20.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:27px;"><p>מסת דגימת סלע בזלת מארה נמדדה. נוסיף את הנתון לדוח הנתונים:</p></div>
+    </div>
+    <div class="report report--4row" data-reveal data-reveal-order="1" style="position:absolute; left:72px; top:0px; width:356px; height:355px;">
+      <div class="report__title">דוח נתונים</div>
+      <div class="report__head"><span style="width:38%">מדידת המסה</span><span style="width:62%">דגימת הסלע</span></div>
+      <div class="report__row"><span class="val" style="width:38%">57 גרם</span><span style="width:62%">אָנוֹרְתוֹזִיט</span></div>
+      <div class="report__row"><span class="val" style="width:38%" data-reveal data-reveal-order="2">45 גרם</span><span style="width:62%">בָּזֶלֶת מָארֶה</span></div>
+      <div class="report__row"><span class="val" style="width:38%"></span><span style="width:62%">רֶגוֹלִית</span></div>
+      <div class="report__row"><span class="val" style="width:38%"></span><span style="width:62%">בָּזֶלֶת נַקְבּוּבִית</span></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 15 — PPT 21 — regolith on the balance ===== -->
+  <section class="screen" data-screen="15">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-21.jpg" alt="כלי ובו אבקת רגולית על כף אחת ושתי אבני מסה על הכף השנייה">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:373px; top:134px; width:682px; height:293px;">
+      <img class="bubble__img" src="assets/images/bubble-21.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:26px;"><p>כעת נמדוד את מסת אבקת הרגולית. על כף מאזניים אחת נניח כלי ובו אבקת רגולית, ועל הכף השנייה – שתי אבני מסה שמסתם הכוללת היא 220 גרם. כפות המאזניים מאוזנות.</p></div>
+    </div>
+    <div class="slabel" data-reveal data-reveal-order="1" style="position:absolute; left:1341px; top:756px; width:106px; color:#fff; font-size:22px; font-weight:700; text-align:center;">200 גר'</div>
+    <div class="slabel" data-reveal data-reveal-order="1" style="position:absolute; left:1420px; top:772px; width:96px; color:#fff; font-size:22px; font-weight:700; text-align:center;">20 גר'</div>
+    <div class="slabel" data-reveal data-reveal-order="1" style="position:absolute; left:862px; top:800px; width:314px; height:66px; background:#fff; border-radius:26px; font-size:26px; font-weight:700; color:#17223a; text-align:center; line-height:66px;">כלי ובו אבקת רגולית</div>
+  </section>
+
+  <!-- ===== SCREEN 16 — PPT 22-23 — Q4, single choice ===== -->
+  <section class="screen" data-screen="16">
+    <div class="smeta" data-type="question" data-qid="q4" data-answer="3" data-points="12.5" data-fb-correct="מדויק! הנתון שהתקבל במדידת המסה כולל גם את מסת הכלי. כדי שהנתון יהיה מדויק ויתייחס רק למסת הרגולית, עלינו לבצע עיבוד נתונים ולהפחית את מסת הכלי הריק." data-fb-incorrect="כל הכבוד על הניסיון. הנתון שהתקבל במדידת המסה כולל גם את מסת הכלי. כדי שהנתון יהיה מדויק ויתייחס רק למסת הרגולית, עלינו לבצע עיבוד נתונים ולהפחית את מסת הכלי הריק." aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <ol class="qprogress" data-active="4" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:155px; width:1630px; height:760px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:210px; width:880px;"><h2>שאלה 4:</h2><p>כשכפות המאזניים מאוזנות, סך כל אבני המסה שהונחו על כף המאזניים הוא 220 גרם.</p><p class="q-bold">האם נתון זה מייצג את כמות החומר של אבקת הרגולית שאותה רצינו למדוד?</p></div>
+    <img src="assets/images/img-22-q4.png" alt="מאזני כפות: כלי ובו אבקת רגולית מול אבני מסה" style="position:absolute; left:880px; top:224px; width:884px; height:630px;">
+    <div class="slabel" style="position:absolute; left:1599px; top:596px; width:112px; font-size:22px; font-weight:700; color:#17223a; text-align:center;">200 גר'</div>
+    <div class="slabel" style="position:absolute; left:1686px; top:626px; width:96px; font-size:22px; font-weight:700; color:#17223a; text-align:center;">20 גר'</div>
+    <div class="slabel" style="position:absolute; left:1013px; top:700px; width:314px; height:60px; background:#fff; border-radius:26px; font-size:24px; font-weight:700; color:#17223a; text-align:center; line-height:60px;">כלי ובו אבקת רגולית</div>
+    <ul class="options options--dots" role="radiogroup" aria-label="אפשרויות תשובה" style="position:absolute; left:250px; top:430px; width:780px;">
+      <li class="option" role="radio" tabindex="0" data-value="1"><span class="dot"></span><span class="lbl">כן, זהו הנתון המדויק שהתקבל במדידת המסה באמצעות המאזניים.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="2"><span class="dot"></span><span class="lbl">לא, כוח הכבידה של הירח משנה את המסה של אבקת הרגולית בתוך הכלי.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="3"><span class="dot"></span><span class="lbl">לא, הנתון כולל גם את מסת הכלי, ויש להחסירה כדי לקבל את מסת אבקת הרגולית.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="4"><span class="dot"></span><span class="lbl">כן, המדידה על הירח בוצעה בתנאי מעבדה מבוקרים.</span></li>
+    </ul>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:250px; top:790px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:846px; width:1120px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 17 — PPT 24 — data report gains the regolith reading ===== -->
+  <section class="screen" data-screen="17">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-24.jpg" alt="גל מחשב את מסת אבקת הרגולית">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:889px; top:219px; width:625px; height:214px;">
+      <img class="bubble__img" src="assets/images/bubble-24.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:26px;"><p>הבנתי. מסת הכלי עם אבקת הרגולית היא 220 גרם. מסת הכלי היא 100 גרם, כלומר מסת אבקת הרגולית שווה ל־120 גרם.</p></div>
+    </div>
+    <div class="report report--4row" data-reveal data-reveal-order="1" style="position:absolute; left:72px; top:0px; width:356px; height:355px;">
+      <div class="report__title">דוח נתונים</div>
+      <div class="report__head"><span style="width:38%">מדידת המסה</span><span style="width:62%">דגימת הסלע</span></div>
+      <div class="report__row"><span class="val" style="width:38%">57 גרם</span><span style="width:62%">אָנוֹרְתוֹזִיט</span></div>
+      <div class="report__row"><span class="val" style="width:38%">45 גרם</span><span style="width:62%">בָּזֶלֶת מָארֶה</span></div>
+      <div class="report__row"><span class="val" style="width:38%" data-reveal data-reveal-order="2">120 גרם</span><span style="width:62%">רֶגוֹלִית</span></div>
+      <div class="report__row"><span class="val" style="width:38%"></span><span style="width:62%">בָּזֶלֶת נַקְבּוּבִית</span></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 18 — PPT 25 — Gal then Shira, single grain on the balance ===== -->
+  <section class="screen" data-screen="18">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="גל מניח גרגר בודד של רגולית על המאזניים">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:498px; top:48px; width:1059px; height:124px;">
+      <img class="bubble__img" src="assets/images/bubble-25-a.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>שירה, הנחתי גרגר בודד של אבקת הרגולית על המאזניים שבהם מדדנו את מסת הכלי ואבקת הרגולית, אך כפות המאזניים לא זזו. לגרגר הזה אין מסה!</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="1" data-reveal-delay="2200" style="position:absolute; left:389px; top:186px; width:495px; height:124px;">
+      <img class="bubble__img" src="assets/images/bubble-25-b.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>אתה טועה, גל, לכל חומר בעולם יש מסה.</p></div>
+    </div>
+    <img data-reveal data-reveal-order="2" src="assets/images/scale-21.png" alt="מאזני כפות שאינם זזים" style="position:absolute; left:612px; top:396px; width:698px; height:563px;">
+  </section>
+
+  <!-- ===== SCREEN 19 — PPT 26-27 — Q5, single choice ===== -->
+  <section class="screen" data-screen="19">
+    <div class="smeta" data-type="question" data-qid="q5" data-answer="3" data-points="12.5" data-fb-correct="צדקת! לכל חומר יש מסה — המאזניים פשוט לא היו רגישים מספיק כדי למדוד מסה כה קטנה." data-fb-incorrect="זו טעות – לכל חומר יש מסה. המאזניים שבהם השתמש גל אינם רגישים מספיק כדי למדוד את המסה הקטנה של הגרגר." aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <ol class="qprogress" data-active="5" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:155px; width:1630px; height:760px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:210px; width:880px;"><h2>שאלה 5:</h2><p>גל טוען שלגרגר אחד אין מסה, ושירה טוענת שלכל חומר בעולם יש מסה.</p><p class="q-bold">מי לדעתכם צודק, גל או שירה? מדוע?</p></div>
+    <img src="assets/images/img-26.png" alt="גרגר רגולית בודד על כף המאזניים" style="position:absolute; left:1302px; top:560px; width:412px; height:311px;">
+    <ul class="options options--dots" role="radiogroup" aria-label="אפשרויות תשובה" style="position:absolute; left:250px; top:420px; width:880px;">
+      <li class="option" role="radio" tabindex="0" data-value="1"><span class="dot"></span><span class="lbl">שירה – כי גל מדד רק פעם אחת את מסת הגרגר, ולא ביצע חזרות על המדידה.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="2"><span class="dot"></span><span class="lbl">גל – אם כפות המאזניים לא זזו כשהונח עליהן הגרגר, אפשר להסיק שלגרגר אין מסה.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="3"><span class="dot"></span><span class="lbl">שירה – כי המאזניים שבהם השתמש גל לא רגישים מספיק כדי למדוד את המסה הקטנה של הגרגר.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="4"><span class="dot"></span><span class="lbl">גל – כי לגרגר אבקה אין מסה על פני הירח, אלא רק משקל.</span></li>
+    </ul>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:250px; top:790px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:846px; width:1120px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 20 — PPT 28 — video 3 (stub: still + narration as captions) ===== -->
+  <section class="screen" data-screen="20">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-28.jpg" alt="מאזניים אנליטיים רגישים במעבדה">
+    <div class="video-cap" data-reveal data-reveal-order="0" style="left:260px; right:auto; width:1400px; max-width:1400px; transform:none; bottom:56px; font-size:28px;"><p style="margin:0 0 8px;">לכל חומר יש מסה, אך כדי למדוד כמויות קטנות מאוד של חומר, עלינו להשתמש בכלי בעל רגישות מדידה מתאימה.</p><p style="margin:0 0 8px;">מסה של גרגר רגולית נמדדת בטווח יחידות של מיקרוגרמים (מיליונית הגרם!).</p><p style="margin:0 0 8px;">לא ניתן למדוד מסה זעירה כזו במאזניים רגילים, ולכן הם יראו '0', אך שימוש במאזניים רגישים יאפשר לנו למדוד אותה במדויק.</p></div>
+  </section>
+
+  <!-- ===== SCREEN 21 — PPT 29 — Gal, the three-measurement report, then Shira ===== -->
+  <section class="screen" data-screen="21">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-29.jpg" alt="גל מול המאזניים עם יומן שלוש המדידות">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:615px; top:103px; width:500px; height:212px;">
+      <img class="bubble__img" src="assets/images/bubble-29-gal.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:26px;"><p>מדדתי את מסת דגימת סלע הבזלת הנקבובית שלוש פעמים, אך קיבלתי נתון אחד שערכו גבוה במיוחד:</p></div>
+    </div>
+    <div class="report report--3row" data-reveal data-reveal-order="1" style="position:absolute; left:379px; top:449px; width:358px; height:316px;">
+      <div class="report__title">מדידת סלע<br>בזלת נקבובית</div>
+      <div class="report__row"><span class="val" style="width:42%">48.7 גרם</span><span style="width:58%">מדידה 1</span></div>
+      <div class="report__row"><span class="val" style="width:42%">48.9 גרם</span><span style="width:58%">מדידה 2</span></div>
+      <div class="report__row"><span class="val" style="width:42%">61 גרם</span><span style="width:58%">מדידה 3</span></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="2" data-reveal-delay="4200" style="position:absolute; left:1431px; top:191px; width:413px; height:199px;">
+      <img class="bubble__img" src="assets/images/bubble-29-shira.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>כמדענים, אנחנו חייבים לבחון היטב את הנתונים שמהם אנו מסיקים מסקנות.</p></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 22 — PPT 30-31 — Q6, single choice ===== -->
+  <section class="screen" data-screen="22">
+    <div class="smeta" data-type="question" data-qid="q6" data-answer="3" data-points="12.5" data-fb-correct="נכון מאוד! כשמתקבלת תוצאה חריגה, מבצעים מדידות נוספות כדי להבין אם מדובר בטעות (שנגרמת למשל מתקלה במכשיר המדידה) או בתוצאה אמיתית. רק לאחר בדיקת הנתונים אפשר להסיק מסקנות אמינות." data-fb-incorrect="כל הכבוד על הניסיון. כשמתקבלת תוצאה חריגה, מבצעים מדידות נוספות כדי להבין אם מדובר בטעות (שנגרמת למשל מתקלה במכשיר המדידה) או בתוצאה אמיתית. רק לאחר בדיקת הנתונים אפשר להסיק מסקנות אמינות." aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <ol class="qprogress" data-active="6" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:155px; width:1630px; height:760px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:210px; width:1060px;"><h2>שאלה 6:</h2><p class="q-bold">כיצד על צוות המעבדה לנהוג במקרה של תוצאה חריגה כזו? מדוע?</p></div>
+    <div class="report report--3row" data-reveal data-reveal-order="0" style="position:absolute; left:1332px; top:214px; width:358px; height:316px;">
+      <div class="report__title">מדידת סלע<br>בזלת נקבובית</div>
+      <div class="report__row"><span class="val" style="width:42%">48.7 גרם</span><span style="width:58%">מדידה 1</span></div>
+      <div class="report__row"><span class="val" style="width:42%">48.9 גרם</span><span style="width:58%">מדידה 2</span></div>
+      <div class="report__row"><span class="val" style="width:42%">61 גרם</span><span style="width:58%">מדידה 3</span></div>
+    </div>
+    <ul class="options options--dots" role="radiogroup" aria-label="אפשרויות תשובה" style="position:absolute; left:250px; top:340px; width:1060px;">
+      <li class="option" role="radio" tabindex="0" data-value="1"><span class="dot"></span><span class="lbl">לחשב ממוצע של שלוש התוצאות, כי חובה להתייחס לכל המדידות שנעשו.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="2"><span class="dot"></span><span class="lbl">למחוק את התוצאה הגבוהה מבין השלוש כי היא החריגה ויוצאת הדופן.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="3"><span class="dot"></span><span class="lbl">לבצע מדידות נוספות כדי לבחון אם התוצאה שלהן עקבית לתוצאת שתי המדידות הראשונות.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="4"><span class="dot"></span><span class="lbl">להחזיק את האבן בידיים כדי להעריך עד כמה היא כבדה, ולפי זה להחליט באילו מהנתונים לבחור.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="5"><span class="dot"></span><span class="lbl">לבחור תמיד בתוצאה הגבוהה כי היא האמינה ביותר.</span></li>
+    </ul>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:250px; top:780px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:846px; width:1180px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 23 — PPT 32 — the report is complete ===== -->
+  <section class="screen" data-screen="23">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-32.jpg" alt="הדגימות ארוזות ודוח הנתונים מלא">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:531px; top:24px; width:498px; height:247px;">
+      <img class="bubble__img" src="assets/images/bubble-32.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>סיימנו לתעד את נתוני המסה והנפח של דגימות הסלע בדוח, כעת נוכל להתאים להן אריזות ולשלוח אותן באופן בטוח לכדור הארץ.</p></div>
+    </div>
+    <div class="report report--4row" data-reveal data-reveal-order="1" style="position:absolute; left:72px; top:0px; width:356px; height:355px;">
+      <div class="report__title">דוח נתונים</div>
+      <div class="report__head"><span style="width:38%">מדידת המסה</span><span style="width:62%">דגימת הסלע</span></div>
+      <div class="report__row"><span class="val" style="width:38%">57 גרם</span><span style="width:62%">אָנוֹרְתוֹזִיט</span></div>
+      <div class="report__row"><span class="val" style="width:38%">45 גרם</span><span style="width:62%">בָּזֶלֶת מָארֶה</span></div>
+      <div class="report__row"><span class="val" style="width:38%">120 גרם</span><span style="width:62%">רֶגוֹלִית</span></div>
+      <div class="report__row"><span class="val" style="width:38%" data-reveal data-reveal-order="2">48.8 גרם</span><span style="width:62%">בָּזֶלֶת נַקְבּוּבִית</span></div>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 24 — PPT 33 — Shira, Gal, Shira: the three gas canisters ===== -->
+  <section class="screen" data-screen="24">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-33.jpg" alt="שלושה מיכלי גז זהים על שולחן העבודה">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:1028px; top:14px; width:540px; height:200px;">
+      <img class="bubble__img" src="assets/images/bubble-33-a.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:26px;"><p>גל, שכחת שיש כאן שלושה מכלי גז שגם אותם צריך לארוז ולשלוח לכדור הארץ.</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="1" data-reveal-delay="2400" style="position:absolute; left:190px; top:198px; width:720px; height:232px;">
+      <img class="bubble__img" src="assets/images/bubble-33-b.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>נכון, הם זהים לגמרי בנפחם ומכילים אותו חומר – גז שנלקח מסביבת הירח (גז ירחי). האם נוכל להסיק שיש בכל אחד מהם אותה מסה (כמות חומר) של גז?</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="2" data-reveal-delay="4800" style="position:absolute; left:1384px; top:655px; width:500px; height:160px;">
+      <img class="bubble__img" src="assets/images/bubble-33-c.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>לא בטוח, גל. בוא נסתכל בטבלת נתוני המדידות של המעבדה.</p></div>
+    </div>
+    <div class="slabel" data-reveal data-reveal-order="3" style="position:absolute; left:458px; top:705px; width:129px; color:#fff; font-size:24px; font-weight:700; text-align:center;">1 ליטר</div>
+    <div class="slabel" data-reveal data-reveal-order="3" style="position:absolute; left:658px; top:709px; width:129px; color:#fff; font-size:24px; font-weight:700; text-align:center;">1 ליטר</div>
+    <div class="slabel" data-reveal data-reveal-order="3" style="position:absolute; left:853px; top:722px; width:129px; color:#fff; font-size:24px; font-weight:700; text-align:center;">1 ליטר</div>
+  </section>
+
+  <!-- ===== SCREEN 25 — PPT 34-35 — Q7, single choice over the measurement table ===== -->
+  <section class="screen" data-screen="25">
+    <div class="smeta" data-type="question" data-qid="q7" data-answer="2" data-points="12.5" data-fb-correct="מצוין! זוהי מסקנה המבוססת על הנתונים בטבלה. ראינו ששלושת המכלים תופסים את אותו מקום (נפח), אך כמות החומר (המסה) בתוכם שונה. מכאן שנפח לבדו אינו מספיק כדי לקבוע את המסה של גז." data-fb-incorrect="כל הכבוד על הניסיון. שלושת המכלים תופסים את אותו מקום (נפח), אך כמות החומר (המסה) בתוכם שונה. מכאן שנפח לבדו אינו מספיק כדי לקבוע את המסה של גז." aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <ol class="qprogress" data-active="7" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:155px; width:1630px; height:760px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:182px; width:1500px;"><h2>שאלה 7:</h2></div>
+    <div class="dtable__cap" data-reveal data-reveal-order="0" style="position:absolute; left:245px; top:232px; width:1505px;">טבלת נתוני המדידות</div>
+    <div class="dtable" data-reveal data-reveal-order="0" style="position:absolute; left:245px; top:295px; width:1505px;">
+      <table><thead><tr><th>מיכל</th><th>תכולה</th><th>נפח המיכל (ליטר)</th><th>נפח הגז (ליטר)</th><th>מסת המיכל הריק (גרם)</th><th>מסת הגז בקירוב (גרם)</th></tr></thead><tbody><tr><td>א</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>0.6</td></tr><tr><td>ב</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>כ-0.00000001</td></tr><tr><td>ג</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>כ-1.2</td></tr></tbody><tfoot><tr><td colspan="6"></td></tr></tfoot></table>
+    </div>
+    <p class="q-bold" style="position:absolute; left:250px; top:608px; width:1500px; font-size:30px; font-weight:800; color:#1a1a1a; text-align:right; margin:0;">התבוננו בנתונים שבטבלה. מהי המסקנה שנוכל להסיק לגבי מסת הגז בשלושת המכלים?</p>
+    <ul class="options options--dots" role="radiogroup" aria-label="אפשרויות תשובה" style="position:absolute; left:250px; top:672px; width:1500px;">
+      <li class="option" role="radio" tabindex="0" data-value="1"><span class="dot"></span><span class="lbl">נפח זהה של מכלים מעיד על כך שהם מכילים מסה זהה של גז.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="2"><span class="dot"></span><span class="lbl">במכלים בעלי נפח זהה אין בהכרח מסה זהה של גז.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="3"><span class="dot"></span><span class="lbl">ככל שמסת הגז בתוך המכל קטנה יותר, כך הנפח שהוא תופס במרחב הולך וקטן.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="4"><span class="dot"></span><span class="lbl">לא ניתן להסיק מסקנה לגבי כמות החומר ללא ידיעת הטמפרטורה של הגז.</span></li>
+    </ul>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:258px; top:782px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:846px; width:1180px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 26 — PPT 36 — Gal, Shira, and the two blinking frames on the table ===== -->
+  <section class="screen" data-screen="26">
+    <div class="smeta" data-type="content" data-gate="dialogue" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:578px; top:58px; width:979px; height:124px;">
+      <img class="bubble__img" src="assets/images/bubble-36-a.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:24px;"><p>שירה, משהו פה לא מסתדר. גז מתפשט וממלא את כל נפח המיכל. אם נפח הגז זהה במכלים, איך יכול להיות שכמות החומר שונה בכל מיכל?</p></div>
+    </div>
+    <div class="bubble" data-reveal data-reveal-order="1" data-reveal-delay="2400" style="position:absolute; left:389px; top:196px; width:670px; height:124px;">
+      <img class="bubble__img" src="assets/images/bubble-36-b.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:25px;"><p>כן, התשובה טמונה בתכונות של מצב הצבירה הגזי.</p></div>
+    </div>
+    <div style="position:absolute; left:166px; top:348px; width:1614px; height:621px; background:rgba(250,251,252,.94); border-radius:36px;" data-reveal data-reveal-order="2"></div>
+    <div class="dtable__cap" data-reveal data-reveal-order="2" style="position:absolute; left:294px; top:364px; width:1390px;">טבלת נתוני המדידות</div>
+    <div class="dtable" data-reveal data-reveal-order="2" style="position:absolute; left:294px; top:404px; width:1390px;">
+      <table><thead><tr><th>מיכל</th><th>תכולה</th><th>נפח המיכל (ליטר)</th><th>נפח הגז (ליטר)</th><th>מסת המיכל הריק (גרם)</th><th>מסת הגז בקירוב (גרם)</th></tr></thead><tbody><tr><td>א</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>0.6</td></tr><tr><td>ב</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>כ-0.00000001</td></tr><tr><td>ג</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>כ-1.2</td></tr></tbody><tfoot><tr><td colspan="6"></td></tr></tfoot></table>
+    </div>
+    <div class="hl-frame" data-reveal data-reveal-order="3" style="position:absolute; left:290px; top:400px; width:240px; height:248px;"></div>
+    <div class="hl-label" data-reveal data-reveal-order="3" style="position:absolute; left:280px; top:664px; width:260px;">בכל מכל יש מסת גז שונה</div>
+    <div class="hl-frame" data-reveal data-reveal-order="3" style="position:absolute; left:753px; top:400px; width:240px; height:248px;"></div>
+    <div class="hl-label" data-reveal data-reveal-order="3" style="position:absolute; left:743px; top:664px; width:260px;">נפח הגז זהה בשלושת המכלים</div>
+  </section>
+
+  <!-- ===== SCREEN 27 — PPT 37-38 — Q8, single choice ===== -->
+  <section class="screen" data-screen="27">
+    <div class="smeta" data-type="question" data-qid="q8" data-answer="1" data-points="12.5" data-fb-correct="נכון מאוד! מכיוון שגז ניתן לדחיסה, אפשר להכניס כמויות שונות של חומר לתוך מכל בעל נפח קבוע. נתון הנפח לבדו אינו מספיק כדי לקבוע את כמות החומר במכל." data-fb-incorrect="כל הכבוד על הניסיון. מכיוון שגז ניתן לדחיסה, אפשר להכניס כמויות שונות של חומר לתוך מכל בעל נפח קבוע. נתון הנפח לבדו אינו מספיק כדי לקבוע את כמות החומר במכל." aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-lab-dark.jpg" alt="">
+    <ol class="qprogress" data-active="8" data-total="8" aria-label="התקדמות בשאלות" style="position:absolute; left:1272px; top:42px;"></ol>
+    <div style="position:absolute; left:180px; top:130px; width:1630px; height:800px; background:rgba(250,251,252,.94); border-radius:40px; box-shadow:0 18px 50px rgba(0,0,0,.35);"></div>
+    <div class="qstem" style="position:absolute; left:250px; top:150px; width:1500px;"><h2>שאלה 8:</h2></div>
+    <div class="dtable__cap" data-reveal data-reveal-order="0" style="position:absolute; left:290px; top:196px; width:1390px;">טבלת נתוני המדידות</div>
+    <div class="dtable" data-reveal data-reveal-order="0" style="position:absolute; left:290px; top:250px; width:1390px;">
+      <table><thead><tr><th>מיכל</th><th>תכולה</th><th>נפח המיכל (ליטר)</th><th>נפח הגז (ליטר)</th><th>מסת המיכל הריק (גרם)</th><th>מסת הגז בקירוב (גרם)</th></tr></thead><tbody><tr><td>א</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>0.6</td></tr><tr><td>ב</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>כ-0.00000001</td></tr><tr><td>ג</td><td>גז ירחי</td><td>1</td><td>1</td><td>120.0</td><td>כ-1.2</td></tr></tbody><tfoot><tr><td colspan="6"></td></tr></tfoot></table>
+    </div>
+    <div class="hl-frame" data-reveal data-reveal-order="1" style="position:absolute; left:286px; top:272px; width:240px; height:248px;"></div>
+    <div class="hl-label" data-reveal data-reveal-order="1" style="position:absolute; left:276px; top:536px; width:260px;">בכל מכל יש מסת גז שונה</div>
+    <div class="hl-frame" data-reveal data-reveal-order="1" style="position:absolute; left:749px; top:272px; width:240px; height:248px;"></div>
+    <div class="hl-label" data-reveal data-reveal-order="1" style="position:absolute; left:739px; top:536px; width:260px;">נפח הגז זהה בשלושת המכלים</div>
+    <p class="q-bold" style="position:absolute; left:250px; top:666px; width:1500px; font-size:28px; font-weight:800; color:#1a1a1a; text-align:right; margin:0;">מהי התשובה לשאלתו של גל – איך יכול להיות שכמות החומר שונה בכל מיכל?</p>
+    <ul class="options options--dots" role="radiogroup" aria-label="אפשרויות תשובה" style="position:absolute; left:250px; top:716px; width:1500px;">
+      <li class="option" role="radio" tabindex="0" data-value="1"><span class="dot"></span><span class="lbl">גז ניתן לדחיסה ולכן לתוך מכל בעל נפח קבוע אפשר להכניס בכל פעם כמות שונה של חומר.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="2"><span class="dot"></span><span class="lbl">גל צודק, זה לא ייתכן. אם נפח המכלים זהה, הם חייבים להכיל בדיוק אותה כמות חומר, כלומר הגז יתפוס את אותו המקום בשלושתם.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="3"><span class="dot"></span><span class="lbl">בגלל כוח הכבידה הנמוך על הירח, בחלק מהמכלים הגז הופך דליל יותר ומאבד חלק מכמות החומר שלו.</span></li>
+      <li class="option" role="radio" tabindex="0" data-value="4"><span class="dot"></span><span class="lbl">גז הוא חומר שאינו תופס מקום, ולכן נתון הנפח שלו אינו קשור לכמות החומר שנמצאת במיכל.</span></li>
+    </ul>
+    <button class="btn--check check-btn" type="button" aria-label="בדיקה" hidden style="position:absolute; left:150px; top:800px; width:145px; height:95px;">
+      <img src="assets/images/check-button.png" alt="">
+    </button>
+    <div class="feedback" role="status" aria-live="polite" style="position:absolute; left:50%; top:856px; width:1180px; bottom:auto; transform:translateX(-50%);" hidden>
+      <p class="feedback__title"></p>
+      <p class="feedback__body"></p>
+    </div>
+  </section>
+
+  <!-- ===== SCREEN 28 — PPT 39 — closing ===== -->
+  <section class="screen" data-screen="28" data-hide-fwd>
+    <div class="smeta" data-type="content" data-final="true" aria-hidden="true" hidden></div>
+    <img class="screen-bg" src="assets/images/bg-39.jpg" alt="גל ושירה עם הדגימות הארוזות, מוכנים לחזור לכדור הארץ">
+    <div class="bubble" data-reveal data-reveal-order="0" style="position:absolute; left:606px; top:35px; width:499px; height:283px;">
+      <img class="bubble__img" src="assets/images/bubble-39.png" alt="">
+      <div class="bubble__text" style="position:absolute; top:14px; bottom:30px; padding:0 28px; font-size:26px;"><p>זהו, שירה, סיימנו את מדידות הנפח והמסה, למדנו על המקום שהחומר תופס במרחב ועל כמות החומר.<br>כעת הגיע הזמן לחזור לכדור הארץ.</p></div>
+    </div>
+    <button class="end-submit" type="button" data-submit aria-label="סיום — סוגר את הלומדה" data-reveal data-reveal-order="1" style="position:absolute; left:85px; top:930px; width:210px; bottom:auto; transform:none;">
+      <img src="assets/images/end-button.png" alt="סיום">
+    </button>
+  </section>
+  <!-- navigation buttons -->
+  <button id="nav-fwd" class="navbtn navbtn--fwd" type="button" aria-label="המשך">
+    <img src="assets/images/nav-forward.png" alt="">
+  </button>
+  <button id="nav-back" class="navbtn navbtn--back" type="button" aria-label="חזרה">
+    <img src="assets/images/nav-back.png" alt="">
+  </button>
+
+</div><!-- /stage -->
+
+<script src="js/scorm.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,680 @@
+/* =====================================================================
+   STEM לומדה — reusable foundation stylesheet
+   Design tokens live in :root — retune these from the Figma design.
+   Structure/behaviour is generic and reused across all units.
+   ===================================================================== */
+
+/* ---- brand font (Assistant). Swap to local @font-face for offline. ---- */
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
+
+:root{
+  /* canvas */
+  --stage-w: 1920px;
+  --stage-h: 1080px;
+
+  /* palette — PLACEHOLDERS, replace with the approved design tokens */
+  --c-bg:        #eaf2f6;
+  --c-ink:       #1f2a30;
+  --c-primary:   #1c7293;
+  --c-primary-d: #125266;
+  --c-accent:    #f2a03d;
+  --c-card:      #ffffff;
+  --c-card-line: #d7e6ec;
+  --c-correct:   #2e8b57;
+  --c-incorrect: #c0392b;
+  --c-muted:     #6a7a82;
+
+  /* type scale (at 1:1 on the 1920×1080 stage) */
+  --fs-body: 30px;
+  --fs-stem: 38px;
+  --fs-title: 44px;
+
+  --radius: 18px;
+  --shadow: 0 10px 30px rgba(0,0,0,.12);
+  --focus: 3px solid #2b8cc4;
+}
+
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{
+  font-family:'Assistant',Arial,sans-serif;
+  color:var(--c-ink);
+  background:#0d1418;              /* letterbox behind the stage */
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ---------------------------------------------------------------
+   STAGE : fixed 1920×1080, scaled to fit via JS (--scale var).
+   All screen content is absolute-positioned at 1:1 design coords.
+   --------------------------------------------------------------- */
+.stage{
+  position:relative;
+  width:var(--stage-w); height:var(--stage-h);
+  flex:0 0 auto;
+  transform: scale(var(--scale,1));
+  transform-origin: center center;
+  background:var(--c-bg);
+  overflow:hidden;
+  /* the whole 1920x1080 stage is almost always scaled by a fractional (non-integer)
+     ratio to fit the viewport -- on some GPUs/browsers this makes the browser
+     keep re-rasterizing the detailed background art every frame instead of
+     caching it once, which reads as a faint constant "shimmer/pulse" across
+     the whole screen even with zero animation nearby. Pinning this as its own
+     stable GPU layer stops that re-rasterization. */
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* ---- screens: only .active is shown ---- */
+.screen{
+  position:absolute; inset:0;
+  opacity:0; visibility:hidden;
+  transition:opacity .35s ease;
+}
+.screen.active{ opacity:1; visibility:visible; }
+.screen-bg{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+}
+
+/* ---------------------------------------------------------------
+   CARD / TEXT BOX
+   --------------------------------------------------------------- */
+.card{
+  position:absolute;
+  background:var(--c-card);
+  border:1px solid var(--c-card-line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:32px 36px;
+  font-size:var(--fs-body); line-height:1.45;
+}
+.card p{ margin:0 0 .6em; }
+.card p:last-child{ margin-bottom:0; }
+.card h2{ font-size:var(--fs-title); margin:0 0 .5em; color:var(--c-primary-d); }
+
+/* ---------------------------------------------------------------
+   SPEECH BUBBLE TEXT (bubble graphic lives in the background image;
+   this is just the live text placed at the design coordinates)
+   --------------------------------------------------------------- */
+.speech{
+  position:absolute; display:flex; align-items:center; justify-content:center;
+  box-sizing:border-box; padding:10px 26px;
+  font-size:33px; line-height:1.3; font-weight:600;
+  color:#1a1a1a; text-align:center;
+}
+.speech p{ margin:0; }
+
+/* ---------------------------------------------------------------
+   FLOAT-IN REVEAL (elements fade + rise into place; staggered per
+   screen so multi-element screens reveal in order — as in the examples)
+   --------------------------------------------------------------- */
+.float-in{ opacity:0; transform:translateY(26px); }
+.float-in.is-in{ opacity:1; transform:translateY(0);
+  transition:opacity .5s ease, transform .5s ease; }
+@media (prefers-reduced-motion: reduce){
+  .float-in, .float-in.is-in{ opacity:1; transform:none; transition:none; }
+}
+/* feedback popup floats in (keeps its horizontal centering) */
+@keyframes fb-in{ from{ opacity:0; transform:translate(-50%,18px); }
+                  to{ opacity:1; transform:translate(-50%,0); } }
+/* correct/incorrect mark pops into the dot */
+@keyframes mark-pop{ 0%{ opacity:0; transform:scale(.2); }
+                     60%{ opacity:1; transform:scale(1.18); }
+                     100%{ opacity:1; transform:scale(1); } }
+
+/* ---------------------------------------------------------------
+   SPEECH BUBBLE as a positioned element (graphic + centered text) —
+   used where bubbles reveal dynamically (dialogue screens)
+   --------------------------------------------------------------- */
+.bubble{ position:absolute; pointer-events:none; }
+.bubble__img{ position:absolute; inset:0; width:100%; height:100%; }
+.bubble__text{ position:absolute; left:0; right:0; top:26px; bottom:58px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  padding:0 36px; font-size:30px; line-height:1.3; font-weight:600; color:#1a1a1a; }
+.bubble__text p{ margin:0; }
+/* bubble caption positioned to an exact spot inside a floating .bubble (moves with it) */
+.bcap{ position:absolute; display:flex; align-items:center; justify-content:center;
+  text-align:center; font-size:33px; line-height:1.34; font-weight:600; color:#1a1a1a; }
+.bcap p{ margin:0; }
+
+/* (speech bubbles use the original .bubble art, sized per bubble — see above) */
+
+/* live text overlaid on a baked-in bubble graphic (right-aligned RTL, translation-safe) */
+.btext{ position:absolute; font-size:33px; line-height:1.34; font-weight:600;
+  color:#1a1a1a; text-align:right; }
+.btext p{ margin:0; }
+/* teal "view through the microscope" tab label */
+.mlabel{ position:absolute; font-size:30px; line-height:1.18; font-weight:700;
+  color:#1a1a1a; text-align:center; }
+.mlabel p{ margin:0; }
+
+/* teal callout box text (calibration screens) — centered dark text over the baked box */
+.callout{ position:absolute; display:flex; align-items:center; justify-content:center;
+  text-align:center; font-size:30px; line-height:1.3; font-weight:600; color:#1a1a1a; padding:0 24px; }
+.callout p{ margin:0; }
+
+/* data-report table (screen 41) — live text over the baked grid */
+.rtitle{ position:absolute; font-size:52px; font-weight:800; color:#fff; white-space:nowrap; }
+.rhead{ position:absolute; font-size:33px; font-weight:700; color:#fff; white-space:nowrap; }
+.rcell{ position:absolute; font-size:33px; font-weight:600; color:#1a1a1a; white-space:nowrap; }
+
+/* ---------------------------------------------------------------
+   AVATAR (circular character bubble, placed at design coords)
+   --------------------------------------------------------------- */
+.avatar{ position:absolute; }
+
+/* positioned figure/diagram (e.g. a concept illustration that floats in) */
+.diagram{ position:absolute; }
+/* live equation + diagram labels (kept as text so they're translatable) */
+.eq{ position:absolute; text-align:center; font-size:60px; font-weight:400; color:#4e7a34; }
+.eq .k{ color:#111; font-weight:400; }   /* + and = signs in black */
+.eq .b{ font-weight:800; }               /* נפח הגוף — green + bold */
+.dlabel{ position:absolute; text-align:center; font-size:30px; line-height:1.35; color:#1f2a30; }
+.dlabel b{ display:block; font-size:42px; margin-bottom:6px; }
+
+/* glossary hint: a link inline with a dlabel's body text that toggles a short-definition tooltip */
+.gloss-link{
+  font:inherit; background:none; border:none; padding:0; margin:0;
+  cursor:pointer; color:#185fa5; text-decoration:underline; text-underline-offset:4px;
+  position:relative;
+}
+.gloss-link:hover,
+.gloss-link[aria-expanded="true"]{ color:#0f3f70; }
+.gloss-link:focus-visible{ outline:var(--focus); outline-offset:3px; border-radius:4px; }
+.gloss-link__icon{ font-size:.8em; }
+.gloss-tip{
+  position:absolute; right:0; top:calc(100% + 16px);
+  width:320px; text-align:center; text-decoration:none;
+  background:#fff; color:#1f2a30; font-size:30px; line-height:1.4; font-weight:400;
+  padding:14px 18px; border-radius:12px; border:3px solid #1f2a30; box-shadow:var(--shadow); z-index:30;
+}
+.gloss-tip::after,
+.gloss-tip::before{ content:''; position:absolute; right:20px; border:12px solid transparent; }
+.gloss-tip::after{ bottom:100%; border-bottom-color:#1f2a30; }
+.gloss-tip::before{ bottom:calc(100% - 3px); right:23px; border-width:9px; border-bottom-color:#fff; }
+.gloss-tip[hidden]{ display:none; }
+
+/* ---------------------------------------------------------------
+   APPLET IFRAME (SME standalone applet embedded at design coords)
+   --------------------------------------------------------------- */
+.applet-frame{
+  position:absolute; border:none; border-radius:24px;
+  background:transparent; overflow:hidden;
+  transition:transform .55s ease;
+}
+/* once the experiment is done, the applet settles down + smaller so Shira's summary fits above it */
+.applet-frame.applet-settled{ transform:translateY(45px) scale(0.88); transform-origin:bottom center; }
+
+/* ---------------------------------------------------------------
+   QUESTION + OPTIONS (single choice)
+   --------------------------------------------------------------- */
+.question__stem{ font-size:var(--fs-stem); margin:0 0 24px; }
+.options{ list-style:none; margin:0 0 24px; padding:0; display:grid; gap:16px; }
+.option{
+  display:flex; align-items:center; gap:14px;
+  padding:20px 24px;
+  background:#f6fafc; border:2px solid var(--c-card-line);
+  border-radius:14px; cursor:pointer; font-size:var(--fs-body);
+  transition:border-color .15s, background .15s;
+}
+.option:hover{ border-color:var(--c-primary); background:#eef6fa; }
+.option:focus-visible{ outline:var(--focus); outline-offset:2px; }
+.option[aria-checked="true"]{ border-color:var(--c-primary); background:#e2f0f6; }
+.option.is-correct{ border-color:var(--c-correct); background:#e8f6ee; }
+.option.is-incorrect{ border-color:var(--c-incorrect); background:#fbeceb; }
+.option.is-locked{ pointer-events:none; }
+
+/* ---------------------------------------------------------------
+   QUESTION PROGRESS (8 numbered circles, current one filled)
+   --------------------------------------------------------------- */
+.qprogress{
+  position:absolute; display:flex; gap:5px;
+  list-style:none; margin:0; padding:0;
+}
+.qprogress li{
+  width:62px; height:62px; border-radius:50%; box-sizing:border-box;
+  border:3px solid #2e9bd1; background:#fff; color:#2e9bd1;
+  display:flex; align-items:center; justify-content:center;
+  font-size:36px; font-weight:800; line-height:1; padding-bottom:5px;
+}
+.qprogress li.is-active{ background:#2e9bd1; color:#fff; }
+
+/* ---------------------------------------------------------------
+   QUESTION STEM (positioned at design coords, RTL right-aligned)
+   --------------------------------------------------------------- */
+.qstem{ position:absolute; text-align:right; }
+.qstem h2{ margin:0 0 14px; font-size:38px; font-weight:800; color:#4e7a34; }
+/* all stem lines share one tight line spacing — bold lines are NOT extra-spaced */
+.qstem p{ margin:0; font-size:34px; line-height:1.4; color:#1f2a30; }
+.qstem p.q-bold{ font-weight:800; }
+
+/* ---------------------------------------------------------------
+   DOT-STYLE OPTIONS (radio dot on the right, label to its left)
+   --------------------------------------------------------------- */
+.options--dots{
+  position:absolute; list-style:none; margin:0; padding:0;
+  display:flex; flex-direction:column; gap:14px;
+}
+.options--dots .option{
+  display:flex; align-items:flex-start; gap:14px; justify-content:flex-start;
+  background:none; border:none; padding:2px; font-size:31px; line-height:1.3; cursor:pointer;
+}
+.options--dots .dot{ margin-top:8px; }   /* center the dot on the first text line */
+/* short-answer variant (e.g. "40 מ\"ל") stays single-line + centered dots */
+.options--dots.options--short .option{ align-items:center; }
+.options--dots.options--short .dot{ margin-top:0; }
+/* compact variant for long options squeezed beside an image */
+.options--dots.options--compact .option{ font-size:27px; }
+.options--dots .option.is-correct,
+.options--dots .option.is-incorrect{ background:none; }
+.options--dots .dot{
+  width:24px; height:24px; border-radius:50%; box-sizing:border-box;
+  border:2.5px solid #64748b; background:#fff; flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:15px; font-weight:800; line-height:1;
+  transition:background .25s ease, border-color .25s ease;
+}
+.options--dots .lbl{ color:#1f2a30; }
+/* neutral grey in every state (unselected outline + selected fill are the same colour) */
+.options--dots .option:hover .dot{ background:#eef1f4; }
+.options--dots .option[aria-checked="true"] .dot{ border-color:#64748b; background:#64748b; }
+/* result marks appear NEXT TO the answer (green check / red X inside the dot) */
+.options--dots .option.is-correct .dot{ border-color:var(--c-correct); background:var(--c-correct); }
+.options--dots .option.is-correct .dot::after{ content:'✓'; animation:mark-pop .32s ease both; }
+.options--dots .option.is-incorrect .dot{ border-color:var(--c-incorrect); background:var(--c-incorrect); }
+.options--dots .option.is-incorrect .dot::after{ content:'✕'; animation:mark-pop .32s ease both; }
+@media (prefers-reduced-motion: reduce){
+  .feedback{ animation:none; }
+  .options--dots .dot{ transition:none; }
+  .options--dots .option.is-correct .dot::after,
+  .options--dots .option.is-incorrect .dot::after{ animation:none; }
+}
+.options--dots .option:focus-visible{ outline:var(--focus); outline-offset:3px; border-radius:8px; }
+/* multi-select: square check-boxes instead of round radio dots */
+.options--checks .dot{ border-radius:6px; }
+
+/* fill-in-the-blank sentences with inline dropdowns */
+.qfill{ position:absolute; font-size:32px; line-height:1.55; font-weight:600; color:#1a1a1a; text-align:right; }
+.qfill p{ margin:0 0 18px; }
+.qselect{ font-family:inherit; font-size:27px; font-weight:700; color:#185fa5; background:#eaf3fb;
+  border:2px solid #2e9bd1; border-radius:10px; padding:3px 10px; margin:0 6px; vertical-align:middle; cursor:pointer; }
+.qselect:focus-visible{ outline:var(--focus); outline-offset:2px; }
+.qselect.is-correct{ border-color:var(--c-correct); background:#e8f6ee; color:#1b6b3a; }
+.qselect.is-incorrect{ border-color:var(--c-incorrect); background:#fbeceb; color:#a3271f; }
+
+/* drag-to-order: draggable cards + step slots */
+.dcard{ position:absolute; box-sizing:border-box; width:586px; min-height:106px; background:#fff;
+  border:2px solid #cbd5e1; border-radius:16px; padding:12px 18px; font-size:34px; font-weight:600;
+  color:#1a1a1a; text-align:center; line-height:1.3; cursor:grab; touch-action:none; user-select:none;
+  box-shadow:0 4px 10px rgba(0,0,0,.10); display:flex; align-items:center; justify-content:center; }
+.dcard.dragging{ cursor:grabbing; box-shadow:0 14px 28px rgba(0,0,0,.28); z-index:60; }
+.dcard.is-correct{ border-color:var(--c-correct); background:#e8f6ee; }
+.dcard.is-incorrect{ border-color:var(--c-incorrect); background:#fbeceb; }
+.dslot{ position:absolute; box-sizing:border-box; width:586px; height:98px; border:2px dashed #93c5fd;
+  border-radius:16px; background:rgba(255,255,255,.5); }
+.dslot.over{ border-color:#2e9bd1; background:#eaf3fb; }
+.dstep{ position:absolute; font-size:31px; font-weight:800; color:#1a1a1a; }
+.dhead{ position:absolute; font-size:32px; font-weight:800; color:#0f2740; }
+/* screen-37 feedback as a square panel on the (empty) left side, not a bottom popup */
+.feedback--col{ text-align:right; transform:none !important; animation-name:fb-in-left; }
+/* NOTE: .fb-showing only drives the image-position shifts below (screens 17/19).
+   Question text + options stay visible at all times -- do not hide them here;
+   .btn--check visibility is controlled purely by JS via the `hidden` attribute. */
+/* screen 17 (Q5): the rock photo settles 30px lower once feedback is showing */
+.q5-rock-img{ transition:transform .4s ease; }
+.screen.fb-showing .q5-rock-img{ transform:translateY(30px); }
+/* screen 19 (Q6): the rock/powder photo rises to the top of the frame once feedback is
+   showing, making room for the compact feedback panel underneath it */
+.q6-rock-panel{ transition:transform .4s ease; }
+.screen.fb-showing .q6-rock-panel{ transform:translateY(-170px); }
+/* screen 28 (Q8): same rising-photo convention as screen 20 (Q6) */
+.q8-rock-panel{ transition:transform .4s ease; }
+.screen.fb-showing .q8-rock-panel{ transform:translateY(-170px); }
+.fb-report{ animation:fb-in-left .4s ease both; }
+.report-panel{ position:absolute; }
+.report-panel__bg{ position:absolute; left:0; top:0; width:100%; height:100%; }
+.report-panel > div{ position:absolute; text-align:center; }
+.rp-title{ color:#fff; font-size:36px; font-weight:800; }
+.rp-h{ color:#fff; font-size:25px; font-weight:700; }
+.rp-c{ color:#1a2230; font-size:25px; font-weight:600; }
+.info-pop{ position:absolute; z-index:6; }
+.info-pop__bg{ position:absolute; left:0; top:0; width:100%; height:100%; }
+.info-pop > div{ position:absolute; text-align:right; color:#fff; }
+.info-pop__title{ font-size:40px; font-weight:800; }
+.info-pop__body{ font-size:30px; font-weight:600; line-height:1.32; }
+.fb-extra{ animation:fb-in-left .45s ease both; }
+.feedback--left{ transform:none !important; animation-name:fb-in-left;
+  display:flex; flex-direction:column; justify-content:center; text-align:center; box-sizing:border-box; }
+@keyframes fb-in-left{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
+/* pre-filled (static) table cell, e.g. the "action" column in Q2ב */
+.dfixed{ position:absolute; box-sizing:border-box; font-size:23px; font-weight:600; color:#1a1a1a;
+  text-align:center; line-height:1.3; padding:6px 14px; display:flex; align-items:center; justify-content:center; }
+/* method popup button (top-left) + modal */
+.methodbtn{ position:absolute; left:40px; top:30px; width:max-content; max-width:380px; min-height:104px; border-radius:18px;
+  background:#0f2740; color:#fff; border:3px solid #fff; font-family:inherit; font-size:27px; font-weight:800;
+  line-height:1.25; text-align:center; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.3); padding:12px 26px; }
+.methodbtn:hover{ background:#1d4a72; }
+/* icon variant: icon sits on the right of the label (RTL: first in source = rightmost) */
+.methodbtn--icon{ display:flex; align-items:center; gap:14px; text-align:right; }
+.methodbtn__icon{ width:56px; height:56px; flex:0 0 auto; border-radius:50%; }
+/* pulsing "tap" cue on the method button, until it is pressed */
+.methodbtn::after{ content:''; position:absolute; z-index:7; pointer-events:none;
+  left:-24px; bottom:-24px; width:64px; height:64px; border-radius:50%;
+  background:rgba(15,39,64,.92) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6C13 6.67 12.33 6 11.5 6S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.92-1.38z'/></svg>") center/36px no-repeat;
+  box-shadow:0 4px 14px rgba(0,0,0,.4); animation:tap-pulse2 1.3s ease-in-out 4; }
+.methodbtn.method-used::after{ display:none; }
+@keyframes tap-pulse2{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.18); } }
+.modal{ position:absolute; inset:0; background:rgba(0,0,0,.55); display:flex; align-items:center; justify-content:center; z-index:200; }
+.modal[hidden]{ display:none; }
+/* wide enough that the calibration applet's own background (max-width:1460px content)
+   never runs narrower than what it needs, which was clipping/spilling its elements */
+.modal__box{ position:relative; width:1460px; max-width:96%; }
+/* the floating-body applet's own card tops out at 1340px (narrower than the
+   1460px default), so its box was leaving a wide gap between the visible
+   card and the corner close button -- match its box width so the ✕ sits
+   flush on the card's actual corner */
+#fb-modal .modal__box{ width:1352px; }
+#fb-modal-11 .modal__box{ width:1352px; }
+.modal__box iframe{ width:100%; height:1000px; border:0; display:block; background:transparent; }
+.modal__close{ position:absolute; left:-18px; top:-18px; width:54px; height:54px; border-radius:50%;
+  background:#0f2740; color:#fff; border:3px solid #fff; font-size:26px; font-weight:800; cursor:pointer; }
+.modal__close:hover{ background:#1d4a72; }
+/* stage-1 wrong-answer prompt for drag questions */
+.dprompt{ position:absolute; left:180px; top:470px; width:520px; box-sizing:border-box;
+  background:#fff; border:2px solid var(--c-incorrect); border-radius:16px; padding:22px 28px;
+  text-align:center; font-size:32px; font-weight:600; color:#1a1a1a; box-shadow:0 12px 28px rgba(0,0,0,.22); }
+.dprompt__title{ margin:0 0 12px; font-size:38px; font-weight:800; color:var(--c-incorrect); }
+.dprompt p{ margin:0; }
+.dreveal{ color:#185fa5; font-weight:800; text-decoration:underline; cursor:pointer; }
+
+/* sample explorer (screens 5-6): cards fade in with narration, click opens an info popup */
+.card{ position:absolute; width:360px; height:506px; cursor:pointer; opacity:0; transform:translateY(24px);
+  transition:opacity .55s ease, transform .55s ease; perspective:1300px;
+  background:none; border:0; box-shadow:none; padding:0; border-radius:0; }
+.card.in{ opacity:1; transform:translateY(0); }
+.card.in:hover{ transform:translateY(-6px); }
+/* 3D flip */
+.card__inner{ position:absolute; inset:0; transform-style:preserve-3d;
+  transition:transform .6s cubic-bezier(.4,.15,.2,1); }
+.card.is-flipped .card__inner{ transform:rotateY(180deg); }
+.card__face{ position:absolute; inset:0; border-radius:24px; overflow:hidden;
+  -webkit-backface-visibility:hidden; backface-visibility:hidden; }
+.card__face--back{ transform:rotateY(180deg); text-align:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:106px 22px 28px; }
+.card__reverse{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.card__title{ position:relative; margin:0 0 14px; font-size:37px; font-weight:800; color:#395536; }
+.card__desc{ position:relative; margin:0; font-size:31px; line-height:1.34; color:#1f2a30; }
+.card__bg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.card__name{ position:absolute; left:0; right:0; top:330px; height:70px; display:flex; align-items:center;
+  justify-content:center; color:#fff; font-size:37px; font-weight:700; text-align:center; padding:0 8px; white-space:nowrap; }
+/* "tap me" cue on each card until it is flipped */
+.card::after{ content:''; position:absolute; z-index:6; pointer-events:none;
+  left:50%; bottom:16px; transform:translateX(-50%); width:80px; height:80px; border-radius:50%;
+  background:rgba(15,39,64,.9) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6C13 6.67 12.33 6 11.5 6S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.92-1.38z'/></svg>") center/46px no-repeat;
+  box-shadow:0 6px 18px rgba(0,0,0,.45); animation:tap-pulse 1.3s ease-in-out 4; }
+.card.is-flipped::after, .card.seen::after{ display:none; }
+@keyframes tap-pulse{
+  0%,100%{ transform:translateX(-50%) scale(1); box-shadow:0 6px 18px rgba(0,0,0,.45); }
+  50%{ transform:translateX(-50%) scale(1.16); box-shadow:0 6px 26px rgba(45,110,175,.75); } }
+.infopop{ position:absolute; inset:0; background:rgba(0,0,0,.55); display:flex; align-items:center; justify-content:center; z-index:200; }
+.infopop[hidden]{ display:none; }
+.infopop__box{ position:relative; width:780px; max-width:90%; background:#fff; border-radius:24px;
+  padding:38px 46px; box-shadow:0 30px 70px rgba(0,0,0,.5); text-align:center; }
+.infopop__box h3{ margin:0 0 16px; font-size:36px; font-weight:800; color:#4e7a34; }
+.infopop__box p{ margin:0; font-size:28px; line-height:1.5; color:#1f2a30; }
+.infopop__close{ position:absolute; left:-18px; top:-18px; width:54px; height:54px; border-radius:50%;
+  background:#0f2740; color:#fff; border:3px solid #fff; font-size:26px; font-weight:800; cursor:pointer; }
+.infopop__close:hover{ background:#1d4a72; }
+
+/* video screen: full-stage video + center play button + synced caption overlay */
+.videoscreen{ position:absolute; inset:0; background:#000; }
+.video-el{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.video-play{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:150px; height:150px; border-radius:50%; border:0; cursor:pointer; z-index:12;
+  background:rgba(15,39,64,.86); color:#fff; font-size:60px; line-height:1;
+  display:flex; align-items:center; justify-content:center; padding-left:10px;
+  box-shadow:0 12px 34px rgba(0,0,0,.45); transition:background .15s, transform .15s; }
+.video-play:hover{ background:#1d4a72; transform:translate(-50%,-50%) scale(1.05); }
+.video-play:focus-visible{ outline:4px solid #fff; outline-offset:4px; }
+.video-play.hidden{ display:none; }
+.video-logo{ position:absolute; top:28px; right:36px; width:300px; height:auto; z-index:7;
+  opacity:1; transition:opacity .5s ease; pointer-events:none;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.6)); }
+.video-cap{ position:absolute; left:50%; bottom:150px; transform:translateX(-50%);
+  max-width:1400px; width:max-content; padding:12px 30px; z-index:11;
+  background:rgba(0,0,0,.62); color:#fff; font-size:34px; line-height:1.35;
+  text-align:center; border-radius:12px; }
+.video-cap:empty{ display:none; }
+.video-cap.cc-hidden{ display:none; }
+/* custom video control bar (bottom, LTR media-control order) */
+.vctrls{ position:absolute; left:150px; right:150px; bottom:0; z-index:14; height:58px;
+  display:flex; align-items:center; gap:12px; padding:0 22px;
+  border-radius:12px 12px 0 0;
+  background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.32)); }
+.vc-btn{ flex:0 0 auto; height:42px; min-width:42px; padding:0 10px; border:0; cursor:pointer;
+  background:transparent; color:#fff; font-size:22px; line-height:1; border-radius:6px;
+  display:flex; align-items:center; justify-content:center; }
+.vc-btn:hover{ background:rgba(255,255,255,.16); }
+.vc-btn:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+.vc-cc{ font-size:18px; font-weight:800; letter-spacing:1px; border:2px solid #fff; padding:0 12px; }
+.vc-cc.is-off{ opacity:.5; text-decoration:line-through; }
+.vc-time{ flex:0 0 auto; color:#fff; font-size:17px; min-width:46px; text-align:center;
+  font-variant-numeric:tabular-nums; }
+.vc-seek{ flex:1 1 auto; height:6px; cursor:pointer; accent-color:#2e9bd1; }
+.vc-vol{ flex:0 0 92px; width:92px; height:6px; cursor:pointer; accent-color:#2e9bd1; }
+/* closing סיום button + score card */
+/* end button = patched image of the submission ("צדקתי?") button, reading סיימתי */
+.end-submit{ position:absolute; left:50%; bottom:150px; transform:translateX(-50%); z-index:20;
+  width:250px; padding:0; border:none; background:transparent; cursor:pointer; transition:transform .15s; }
+.end-submit img{ width:100%; height:auto; display:block; filter:drop-shadow(0 10px 24px rgba(0,0,0,.5)); }
+.end-submit:hover{ transform:translateX(-50%) scale(1.05); }
+.end-submit:focus-visible{ outline:4px solid #fff; outline-offset:3px; border-radius:12px; }
+.end-submit[hidden]{ display:none; }
+.endcard{ position:absolute; inset:0; z-index:30; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; gap:14px;
+  background:rgba(15,39,64,.9); color:#fff; }
+.endcard[hidden]{ display:none; }
+.endcard h2{ font-size:56px; font-weight:800; margin:0; }
+.endcard p{ font-size:42px; margin:0; }
+.endcard__note{ font-size:28px !important; color:#bfe0f2; }
+
+/* narration player bar (bottom, RTL: controls on the right, caption fills the left) */
+.player{ position:absolute; left:50%; bottom:40px; transform:translateX(-50%);
+  width:1500px; max-width:94%; display:flex; align-items:center; gap:24px; z-index:60;
+  background:rgba(15,39,64,.9); color:#fff; border-radius:20px; padding:16px 28px;
+  box-shadow:0 12px 34px rgba(0,0,0,.32); }
+.player__ctrls{ flex:0 0 auto; display:flex; gap:14px; }
+.player__btn{ width:60px; height:60px; border-radius:50%; border:0; cursor:pointer;
+  background:#2e9bd1; color:#fff; font-size:24px; line-height:1; display:flex;
+  align-items:center; justify-content:center; transition:background .15s; }
+.player__btn:hover{ background:#3aabde; }
+.player__btn:focus-visible{ outline:3px solid #fff; outline-offset:3px; }
+.player__btn--sec{ background:#3f5a74; font-size:26px; }
+.player__btn--sec:hover{ background:#4d6b88; }
+.player__cap{ flex:1; margin:0; font-size:35px; line-height:1.35; text-align:right; }
+
+/* check button: the design graphic as an image button (hides on feedback) */
+.check-btn{ position:absolute; padding:0; border:none; background:transparent; cursor:pointer; }
+.check-btn img{ width:100%; height:100%; display:block; }
+.check-btn:focus-visible{ outline:var(--focus); outline-offset:3px; border-radius:12px; }
+.check-btn[disabled]{ opacity:.55; cursor:default; }
+
+/* ---------------------------------------------------------------
+   BUTTONS
+   --------------------------------------------------------------- */
+.btn{
+  font-family:inherit; font-size:26px; font-weight:700;
+  padding:14px 34px; border-radius:12px; border:none; cursor:pointer;
+  background:var(--c-primary); color:#fff; transition:filter .15s;
+}
+.btn:hover{ filter:brightness(1.07); }
+.btn:focus-visible{ outline:var(--focus); outline-offset:3px; }
+.btn[disabled]{ opacity:.45; cursor:default; }
+.btn--hint{ background:transparent; color:var(--c-primary-d); text-decoration:underline; padding-inline:12px; }
+.btn--check,.btn--continue,.btn--restart{ margin-inline-start:8px; }
+
+.hint{
+  margin:16px 0 0; padding:16px 20px;
+  background:#fff8e9; border-inline-start:5px solid var(--c-accent);
+  border-radius:10px; font-size:26px;
+}
+
+/* ---------------------------------------------------------------
+   FEEDBACK PANEL
+   --------------------------------------------------------------- */
+.feedback{
+  position:absolute; left:50%; bottom:60px; transform:translateX(-50%);
+  width:1100px; max-width:calc(100% - 120px);
+  background:var(--c-card); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:28px 40px; z-index:5;
+}
+.feedback{ text-align:center; animation:fb-in .4s ease both; }
+.feedback__title{ font-size:38px; font-weight:800; margin:0 0 8px; }
+.feedback__body{ font-size:32px; line-height:1.4; margin:0; }
+.feedback.is-correct .feedback__title{ color:var(--c-correct); }
+.feedback.is-incorrect .feedback__title{ color:var(--c-incorrect); }
+
+/* ---------------------------------------------------------------
+   VIDEO PLACEHOLDER  (real <video> dropped in later)
+   --------------------------------------------------------------- */
+.video-placeholder{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:repeating-linear-gradient(45deg,#243b45 0 40px,#1c2f38 40px 80px);
+  color:#cfe6f0;
+}
+.video-placeholder__label{
+  font-size:40px; font-weight:700; padding:20px 34px;
+  border:3px dashed #7fb6cc; border-radius:16px; background:rgba(0,0,0,.25);
+}
+
+/* ---------------------------------------------------------------
+   END SCREEN
+   --------------------------------------------------------------- */
+.end-card{ text-align:center; }
+.end-card .score{ font-size:34px; margin:18px 0 26px; }
+
+/* ---------------------------------------------------------------
+   NAVIGATION BUTTONS (inside the stage, at the design coordinates)
+   forward = bottom-left (RTL), back = bottom-right, ~105px circles
+   --------------------------------------------------------------- */
+.navbtn{
+  position:absolute; width:105px; height:105px;
+  padding:0; border:none; background:none; cursor:pointer; z-index:20;
+}
+.navbtn img{ width:100%; height:100%; display:block; }
+.navbtn:hover{ filter:brightness(1.08); }
+.navbtn:focus-visible{ outline:var(--focus); outline-offset:4px; border-radius:50%; }
+.navbtn[disabled]{ opacity:.3; cursor:default; }
+.navbtn--fwd{ left:24px;   top:935px; }
+.navbtn--back{ left:1780px; top:935px; }
+/* blink the forward arrow when it appears after a correct answer */
+.navbtn.nav-pulse{ animation:navpulse 1s ease-in-out 3; }
+@keyframes navpulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.14); } }
+@media (prefers-reduced-motion: reduce){ .navbtn.nav-pulse{ animation:none; } }
+
+/* ---------------------------------------------------------------
+   accessibility helpers
+   --------------------------------------------------------------- */
+[hidden]{ display:none !important; }
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+@media (prefers-reduced-motion: reduce){
+  .screen{ transition:none; }
+}
+
+/* =====================================================================
+   MASS UNIT — components this unit adds on top of the shared foundation.
+   Geometry below is measured from the approved Gfx layouts (1920x1080).
+   ===================================================================== */
+
+/* --- screen title chip (top-left roundel, e.g. "מדידת מסה במאזניים") --- */
+.chip{ position:absolute; left:26px; top:26px; width:148px; height:148px; border-radius:50%;
+  background:#0b0f14; color:#fff; display:flex; align-items:center; justify-content:center;
+  text-align:center; padding:0 18px; font-size:23px; font-weight:700; line-height:1.15;
+  box-shadow:0 8px 24px rgba(0,0,0,.45); }
+
+/* --- data report (דוח נתונים) -----------------------------------------
+   Built in CSS rather than a baked frame so the rows can fill in one at a
+   time and so Arabic can reflow. Palette sampled from report-frame-3row.png */
+.report{ position:absolute; background:#edefe4; border-radius:22px; overflow:hidden;
+  box-shadow:0 14px 40px rgba(0,0,0,.45); }
+.report__title{ background:#395436; color:#fff; font-size:34px; font-weight:800;
+  text-align:center; display:flex; align-items:center; justify-content:center; }
+.report__head{ background:#17165b; color:#fff; font-size:22px; font-weight:700; display:flex; }
+.report__row{ display:flex; font-size:22px; font-weight:600; color:#2a2f33;
+  border-top:1px solid #d2d8ca; }
+.report__row > span,.report__head > span{ display:flex; align-items:center; justify-content:center;
+  padding:0 10px; text-align:center; }
+.report__row .val{ font-weight:700; }
+.report--4row .report__title{ height:70px; margin-top:37px; }
+.report--4row .report__head,.report--4row .report__row{ height:47px; }
+.report--3row .report__title{ height:100px; margin-top:25px; line-height:1.12; padding:0 16px; }
+.report--3row .report__row{ height:46px; }
+/* the value cell floats in on its own once the matching bubble has landed */
+.report__row .val.float-in{ opacity:0; transform:translateY(10px); }
+.report__row .val.float-in.is-in{ opacity:1; transform:translateY(0); transition:opacity .45s ease, transform .45s ease; }
+
+/* --- measurement data table (טבלת נתוני המדידות, screens 25-27) -------- */
+.dtable{ position:absolute; border-radius:12px; overflow:hidden; font-weight:600;
+  box-shadow:0 10px 26px rgba(0,0,0,.18); }
+.dtable__cap{ position:absolute; text-align:center; font-size:30px; font-weight:800; color:#17165b; }
+.dtable table{ width:100%; border-collapse:collapse; table-layout:fixed; }
+.dtable th{ background:#1d1b5e; color:#fff; font-size:23px; font-weight:700; padding:14px 6px; line-height:1.2; }
+.dtable td{ font-size:24px; color:#17223a; text-align:center; padding:12px 6px; }
+.dtable tbody tr:nth-child(odd) td{ background:#dbe7e4; }
+.dtable tbody tr:nth-child(even) td{ background:#eef4f2; }
+.dtable tfoot td{ background:#1d1b5e; height:18px; padding:0; }
+
+/* --- blinking highlight frames over the table (screens 26-27) ---------- */
+.hl-frame{ position:absolute; border:5px solid #d63a2f; border-radius:10px; pointer-events:none;
+  animation:hl-blink 1.15s ease-in-out infinite; }
+@keyframes hl-blink{ 0%,100%{ opacity:1; } 50%{ opacity:.18; } }
+.hl-label{ position:absolute; text-align:center; font-size:26px; font-weight:700; color:#17223a; }
+@media (prefers-reduced-motion: reduce){ .hl-frame{ animation:none; } }
+
+/* --- sample explorer (screen 2): click a sample, its panel opens ---------
+   Card art (360x506) is reused from the volume unit, drawn here at 0.78.
+   The name sits live on the card's green band (native top:330 height:70). */
+.sample{ position:absolute; border:0; padding:0; background:none; cursor:pointer;
+  transition:transform .2s ease, filter .2s ease; }
+.sample:hover,.sample:focus-visible{ transform:translateY(-6px); filter:drop-shadow(0 14px 26px rgba(0,0,0,.55)); }
+.sample:focus-visible{ outline:var(--focus); outline-offset:6px; }
+.sample__img{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.sample__name{ position:absolute; left:0; right:0; top:257px; height:56px; padding:0 10px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  color:#fff; font-size:23px; font-weight:700; line-height:1.08; }
+.sample.is-open{ filter:drop-shadow(0 0 0 #2e9bd1) drop-shadow(0 10px 24px rgba(0,0,0,.5)); }
+.sample__info{ position:absolute; background:rgba(247,249,250,.96); border-radius:18px;
+  padding:24px 22px 20px 58px; font-size:22px; line-height:1.34; font-weight:600; color:#1a2230;
+  text-align:right; box-shadow:0 14px 34px rgba(0,0,0,.4); animation:fb-in-left .35s ease both; }
+.sample__info[hidden]{ display:none; }
+.sample__close,.panel__close{ position:absolute; left:12px; top:12px; width:38px; height:38px;
+  border:0; padding:0; background:none; cursor:pointer; }
+.sample__close img,.panel__close img{ width:100%; height:100%; }
+.sample__close:focus-visible,.panel__close:focus-visible{ outline:var(--focus); outline-offset:2px; }
+
+/* --- tabbed info panels (screen 7, מד כוח) ----------------------------- */
+.tab{ position:absolute; border:0; border-radius:14px; background:#f2f6f8; color:#132433;
+  font-size:26px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.35); }
+.tab:hover,.tab[aria-expanded="true"]{ background:#d8ecf7; }
+.tab:focus-visible{ outline:var(--focus); outline-offset:3px; }
+.tabpanel{ position:absolute; background:rgba(247,249,250,.96); border-radius:16px; padding:24px 22px;
+  font-size:23px; line-height:1.35; font-weight:600; color:#1a2230; text-align:right;
+  box-shadow:0 12px 30px rgba(0,0,0,.4); animation:fb-in-left .3s ease both; }
+.tabpanel[hidden]{ display:none; }
+
+/* --- inline jump link ("לחצו" / "מד כוח" cross-references) ------------- */
+.jump{ color:#185fa5; font-weight:800; text-decoration:underline; background:none; border:0;
+  padding:0; font:inherit; cursor:pointer; }
+.jump:focus-visible{ outline:var(--focus); outline-offset:2px; }
+
+/* --- video name tags (screen 1) ---------------------------------------- */
+.nametag{ position:absolute; color:#fff; text-align:center; text-shadow:0 2px 10px rgba(0,0,0,.7); }
+.nametag b{ display:block; font-size:34px; font-weight:800; }
+.nametag span{ display:block; font-size:22px; font-weight:600; opacity:.92; }
+.nametag::before,.nametag::after{ content:''; display:block; height:2px; background:rgba(255,255,255,.75); margin:8px 0; }

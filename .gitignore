@@ -1,0 +1,8 @@
+# dev-only preview (not part of the deployed lomda)
+dev_index.html
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+*~

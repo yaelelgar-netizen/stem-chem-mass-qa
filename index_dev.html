@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>DEV · בדיקת גשר QA (DEV_READY / DEV_GOTO)</title>
+<style>
+  html,body{margin:0;height:100%;font-family:Assistant,Arial,sans-serif;background:#0d1418;color:#eee;}
+  .bar{display:flex;align-items:center;gap:14px;padding:10px 16px;background:#0f2740;}
+  .bar b{font-size:16px;} .bar span{color:#9fb6cc;}
+  button,input{font-size:15px;padding:6px 12px;border-radius:8px;border:1px solid #274866;background:#14314c;color:#dceaf6;cursor:pointer;}
+  input{width:70px;text-align:center;}
+  #total{font-size:18px;color:#7fe0a0;font-weight:700;}
+  iframe{width:100%;height:calc(100vh - 56px);border:0;background:#000;}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <b>בדיקת גשר QA:</b>
+    <span>מסכים שהתגלו:</span> <span id="total">— (ממתין ל-DEV_READY…)</span>
+    <button id="prev">◀ הקודם</button>
+    <input id="scr" type="number" min="1" value="1">
+    <button id="next">הבא ▶</button>
+    <span id="note"></span>
+  </div>
+  <iframe id="frame" src=""></iframe>
+<script>
+  'use strict';
+  var frame = document.getElementById('frame');
+  frame.src = 'index.html?v=' + Date.now(); // always bust cache so edits show up immediately
+  var totalEl = document.getElementById('total');
+  var scr = document.getElementById('scr');
+  var note = document.getElementById('note');
+  var TOTAL = 0, cur = 1;
+
+  // receive the screen count from the lomda's main.js (DEV_READY handshake)
+  window.addEventListener('message', function (e) {
+    var d = e && e.data || {};
+    if (d.type === 'DEV_READY') {
+      TOTAL = d.total || 0;
+      totalEl.textContent = TOTAL + '  (1…' + TOTAL + ')';
+      scr.max = TOTAL;
+      note.textContent = TOTAL ? '✔ הגשר עובד' : '';
+    }
+  });
+  function go(n){
+    if (TOTAL) n = Math.max(1, Math.min(TOTAL, n));
+    cur = n; scr.value = n;
+    frame.contentWindow.postMessage({ type: 'DEV_GOTO', screen: n }, '*');
+  }
+  document.getElementById('prev').onclick = function(){ go(cur - 1); };
+  document.getElementById('next').onclick = function(){ go(cur + 1); };
+  scr.onchange = function(){ go(parseInt(scr.value,10) || 0); };
+</script>
+</body>
+</html>
