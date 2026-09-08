@@ -170,8 +170,11 @@
     // reveal the forward arrow only after Shira + the bubble have risen into view
     setTimeout(function () { if (screens[current] === sc) updateChrome(); }, 800);
   });
-  function next() { goTo(current + 1); }
-  function prev() { goTo(current - 1); }
+  // Keyboard nav must honour the same gates as the arrow buttons — otherwise
+  // ArrowLeft walks straight past every unanswered question and the learner
+  // reaches the end with a score of 0.
+  function next() { if (btnFwd && btnFwd.disabled) return; goTo(current + 1); }
+  function prev() { if (btnBack && btnBack.disabled) return; goTo(current - 1); }
 
   if (btnFwd)  btnFwd.addEventListener('click', next);
   if (btnBack) btnBack.addEventListener('click', prev);
