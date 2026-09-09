@@ -237,7 +237,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 47 · section.screen > div.card > div.card__inner > div.card__face.card__face--front > div.card__name",
       "note": "",
-      "id": "CHEM2MASS-S3-LABEL-01",
+      "id": "CHEM2MASS-S3-LABEL-02",
       "translation": "",
       "status": "active"
     },
@@ -279,7 +279,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 59 · section.screen > div.card > div.card__inner > div.card__face.card__face--front > div.card__name",
       "note": "",
-      "id": "CHEM2MASS-S3-LABEL-03",
+      "id": "CHEM2MASS-S3-LABEL-04",
       "translation": "",
       "status": "active"
     },
@@ -321,7 +321,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 71 · section.screen > div.card > div.card__inner > div.card__face.card__face--front > div.card__name",
       "note": "",
-      "id": "CHEM2MASS-S3-LABEL-05",
+      "id": "CHEM2MASS-S3-LABEL-06",
       "translation": "",
       "status": "active"
     },
@@ -363,7 +363,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 83 · section.screen > div.card > div.card__inner > div.card__face.card__face--front > div.card__name",
       "note": "",
-      "id": "CHEM2MASS-S3-LABEL-07",
+      "id": "CHEM2MASS-S3-LABEL-08",
       "translation": "",
       "status": "active"
     },
@@ -1007,7 +1007,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 150 · section.screen > div.bubble > div.bubble__text > p > button.jump",
       "note": "",
-      "id": "CHEM2MASS-S7-LABEL-01",
+      "id": "CHEM2MASS-S7-LABEL-04",
       "translation": "",
       "status": "active"
     },
@@ -1245,7 +1245,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 188 · section.screen > div.slabel > span",
       "note": "",
-      "id": "CHEM2MASS-S8-LABEL-06",
+      "id": "CHEM2MASS-S8-LABEL-07",
       "translation": "",
       "status": "active"
     },
@@ -1287,7 +1287,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 172 · section.screen > div.tabpanel > button.panel__close",
       "note": "",
-      "id": "CHEM2MASS-S8-POPUP-04",
+      "id": "CHEM2MASS-S8-POPUP-06",
       "translation": "",
       "status": "active"
     },
@@ -1301,7 +1301,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 177 · section.screen > div.tabpanel > button.panel__close",
       "note": "",
-      "id": "CHEM2MASS-S8-POPUP-05",
+      "id": "CHEM2MASS-S8-POPUP-06",
       "translation": "",
       "status": "active"
     },
@@ -3513,7 +3513,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 503 · section.screen > div.slabel",
       "note": "",
-      "id": "CHEM2MASS-S25-LABEL-01",
+      "id": "CHEM2MASS-S25-LABEL-03",
       "translation": "",
       "status": "active"
     },
@@ -3527,7 +3527,7 @@
       "sourceFile": "index.html",
       "sourceLocator": "line 504 · section.screen > div.slabel",
       "note": "",
-      "id": "CHEM2MASS-S25-LABEL-02",
+      "id": "CHEM2MASS-S25-LABEL-03",
       "translation": "",
       "status": "active"
     },
@@ -4605,7 +4605,7 @@
       "sourceFile": "applets/index.html",
       "sourceLocator": "line 20 · body > main.app > section.cards > article.gravity-card > div.card-head > h2",
       "note": "",
-      "id": "CHEM2MASS-APPLETS-TEXT-04",
+      "id": "CHEM2MASS-APPLETS-TEXT-14",
       "translation": "",
       "status": "active"
     },
@@ -4633,7 +4633,7 @@
       "sourceFile": "applets/index.html",
       "sourceLocator": "line 32 · body > main.app > section.cards > article.gravity-card > div.card-head > h2",
       "note": "",
-      "id": "CHEM2MASS-APPLETS-TEXT-06",
+      "id": "CHEM2MASS-APPLETS-TEXT-16",
       "translation": "",
       "status": "active"
     },
@@ -4703,7 +4703,7 @@
       "sourceFile": "applets/index.html",
       "sourceLocator": "line 19 · body > main.app > section.cards > article.gravity-card > div.card-head > img.planet-icon",
       "note": "",
-      "id": "CHEM2MASS-APPLETS-ALT-01",
+      "id": "CHEM2MASS-APPLETS-ALT-04",
       "translation": "",
       "status": "active"
     },
@@ -4717,7 +4717,7 @@
       "sourceFile": "applets/index.html",
       "sourceLocator": "line 31 · body > main.app > section.cards > article.gravity-card > div.card-head > img.planet-icon",
       "note": "",
-      "id": "CHEM2MASS-APPLETS-ALT-02",
+      "id": "CHEM2MASS-APPLETS-ALT-05",
       "translation": "",
       "status": "active"
     },
