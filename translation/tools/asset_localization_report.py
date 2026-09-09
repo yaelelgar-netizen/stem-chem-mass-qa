@@ -27,8 +27,8 @@ ASSETS = [
         "file": "assets/images/check-button.png",
         "bakedText": "צדקתי?",
         "usedInScreens": [
-            "screen-5", "screen-9", "screen-13", "screen-16",
-            "screen-19", "screen-22", "screen-25", "screen-27",
+            "screen-6", "screen-10", "screen-14", "screen-17",
+            "screen-20", "screen-23", "screen-26", "screen-28",
         ],
         "note": (
             "Reusable submit-button graphic (the check-btn <img>), used identically "
@@ -39,7 +39,7 @@ ASSETS = [
     {
         "file": "assets/images/end-button.png",
         "bakedText": "סיימתי",
-        "usedInScreens": ["screen-28"],
+        "usedInScreens": ["screen-29"],
         "note": (
             "Closing submit button. NOTE: the FINAL script (slide 39) labels this "
             "button 'סיום', but the supplied artwork reads 'סיימתי'. Confirm the "
@@ -49,7 +49,7 @@ ASSETS = [
     {
         "file": "assets/images/bg-7.jpg",
         "bakedText": "כדור הארץ / ירח / חללית",
-        "usedInScreens": ["screen-4"],
+        "usedInScreens": ["screen-5"],
         "note": (
             "Background plate for slide 7 was exported with the three panel labels "
             "already burned in, which the art bible forbids. The live labels that "

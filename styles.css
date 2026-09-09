@@ -637,26 +637,11 @@ body{
 .hl-label{ position:absolute; text-align:center; font-size:26px; font-weight:700; color:#17223a; }
 @media (prefers-reduced-motion: reduce){ .hl-frame{ animation:none; } }
 
-/* --- sample explorer (screen 2): click a sample, its panel opens ---------
-   Card art (360x506) is reused from the volume unit, drawn here at 0.78.
-   The name sits live on the card's green band (native top:330 height:70). */
-.sample{ position:absolute; border:0; padding:0; background:none; cursor:pointer;
-  transition:transform .2s ease, filter .2s ease; }
-.sample:hover,.sample:focus-visible{ transform:translateY(-6px); filter:drop-shadow(0 14px 26px rgba(0,0,0,.55)); }
-.sample:focus-visible{ outline:var(--focus); outline-offset:6px; }
-.sample__img{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
-.sample__name{ position:absolute; left:0; right:0; top:257px; height:56px; padding:0 10px;
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  color:#fff; font-size:23px; font-weight:700; line-height:1.08; }
-.sample.is-open{ filter:drop-shadow(0 0 0 #2e9bd1) drop-shadow(0 10px 24px rgba(0,0,0,.5)); }
-.sample__info{ position:absolute; background:rgba(247,249,250,.96); border-radius:18px;
-  padding:24px 22px 20px 58px; font-size:22px; line-height:1.34; font-weight:600; color:#1a2230;
-  text-align:right; box-shadow:0 14px 34px rgba(0,0,0,.4); animation:fb-in-left .35s ease both; }
-.sample__info[hidden]{ display:none; }
-.sample__close,.panel__close{ position:absolute; left:12px; top:12px; width:38px; height:38px;
+/* --- close button shared by the tab panels --------------------------- */
+.panel__close{ position:absolute; left:12px; top:12px; width:38px; height:38px;
   border:0; padding:0; background:none; cursor:pointer; }
-.sample__close img,.panel__close img{ width:100%; height:100%; }
-.sample__close:focus-visible,.panel__close:focus-visible{ outline:var(--focus); outline-offset:2px; }
+.panel__close img{ width:100%; height:100%; }
+.panel__close:focus-visible{ outline:var(--focus); outline-offset:2px; }
 
 /* --- tabbed info panels (screen 7, מד כוח) ----------------------------- */
 .tab{ position:absolute; border:0; border-radius:14px; background:#f2f6f8; color:#132433;

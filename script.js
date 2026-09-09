@@ -513,127 +513,52 @@
 
   /* ---------- SAMPLE EXPLORER (cards + captions driven by the narration timeline;
      click opens info popup; forward gated until all four explored; a11y play/pause bar) ---------- */
+  /* ---------- SAMPLE EXPLORER (flip cards) ----------
+     Same component as the volume unit, minus the narration track: this unit
+     has no audio, so all four cards appear together on entry instead of
+     being revealed one at a time by the clip. Forward stays gated until
+     every card has been flipped at least once. */
   function initExplore(screen) {
-    var cards  = Array.prototype.slice.call(screen.querySelectorAll('.card'));
-    var audio  = screen.querySelector('audio');
-    var capEl  = screen.querySelector('[data-cap]');
-    var ppBtn  = screen.querySelector('[data-pp]');
-    var rpBtn  = screen.querySelector('[data-replay]');
-
-    // narration timeline (seconds) — derived from the audio's phrase pauses; tweak here if needed
-    var REVEAL = { mare: 0.5, vesic: 4.73, anor: 8.97, regolith: 11.89 };   // when each card appears (new narration timing)
-    var CAPS = [   // caption swaps at each phrase onset — re-timed to the new narration
-      { t: 0.3,   text: 'הבאנו בָּזֶלֶת מָארֶה - לבה שהתמצקה באזורים הכהים של הירח' },
-      { t: 4.73,  text: 'בָּזֶלֶת נַקְבּוּבִית - שנוצרה כתוצאה מגזים שנלכדו בסלע' },
-      { t: 8.97,  text: 'אָנוֹרְתוֹזִיט בהיר מהרי הירח העתיקים' },
-      { t: 11.89, text: 'וגם רֶגוֹלִית - אָבָק יְרֵחִי' }
-    ];
-    var PP_PLAY = '▶', PP_PAUSE = '❚❚';
-    var explored = {}, raf = null;
+    var cards = Array.prototype.slice.call(screen.querySelectorAll('.card'));
+    var explored = {};
 
     function checkGate() {
-      if (cards.every(function (c) { return explored[c.getAttribute('data-key')]; })) { screen._exploreDone = true; updateChrome(); }
-    }
-    function revealAll() { cards.forEach(function (c) { c.classList.add('in'); }); }
-    function setCap(t) {
-      var seg = CAPS[0];
-      for (var i = 0; i < CAPS.length; i++) { if (t >= CAPS[i].t) seg = CAPS[i]; }
-      if (capEl && capEl.textContent !== seg.text) capEl.textContent = seg.text;
-    }
-    function tick() {
-      var t = audio ? audio.currentTime : 0;
-      cards.forEach(function (c) { if (t >= (REVEAL[c.getAttribute('data-key')] || 0)) c.classList.add('in'); });
-      setCap(t);
-      if (audio && !audio.paused && !audio.ended && screen.classList.contains('active')) raf = requestAnimationFrame(tick);
-    }
-    function startLoop() { if (raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(tick); }
-
-    cards.forEach(function (card) {
-      function flip() {
-        card.classList.toggle('is-flipped');
-        card.classList.add('seen');                        // hide the "tap me" cue once used
-        card.setAttribute('aria-pressed', card.classList.contains('is-flipped') ? 'true' : 'false');
-        explored[card.getAttribute('data-key')] = true;   // flipped at least once
-        checkGate();
-      }
-      card.addEventListener('click', flip);
-      card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
-    });
-
-    if (audio) {
-      audio.addEventListener('play',  function () { if (ppBtn) ppBtn.textContent = PP_PAUSE; startLoop(); });
-      audio.addEventListener('pause', function () { if (ppBtn) ppBtn.textContent = PP_PLAY; });
-      audio.addEventListener('ended', function () { if (ppBtn) ppBtn.textContent = PP_PLAY; revealAll(); setCap(999); });
-      audio.addEventListener('seeked', function () { tick(); });
-    }
-    if (ppBtn) ppBtn.addEventListener('click', function () {
-      if (!audio) return;
-      if (audio.paused) { var p = audio.play(); if (p && p.catch) p.catch(function () {}); }
-      else audio.pause();
-    });
-    if (rpBtn) rpBtn.addEventListener('click', function () {
-      if (!audio) return;
-      cards.forEach(function (c) { c.classList.remove('in'); });
-      audio.currentTime = 0; var p = audio.play(); if (p && p.catch) p.catch(function () {});
-    });
-
-    screen._onEnter = function () {
-      cards.forEach(function (c) { c.classList.remove('in'); c.classList.remove('is-flipped'); c.classList.remove('seen'); c.setAttribute('aria-pressed', 'false'); });
-      setCap(0);
-      if (ppBtn) ppBtn.textContent = PP_PLAY;
-      if (audio) {
-        try {
-          audio.currentTime = 0;
-          var p = audio.play();
-          if (p && p.catch) p.catch(function () { /* autoplay blocked — user presses play */ });
-        } catch (e) {}
-      }
-      // backstop: if the audio never runs (blocked), reveal cards after the clip length so the learner can still explore
-      setTimeout(function () { if (screen.classList.contains('active') && (!audio || audio.currentTime < 0.2)) revealAll(); }, 16500);
-    };
-    screen._onLeave = function () { if (raf) cancelAnimationFrame(raf); };
-  }
-
-
-  /* =====================================================================
-     MASS UNIT — interactions this unit adds. Everything above is the
-     shared foundation and is byte-identical to the volume unit.
-     ===================================================================== */
-
-  /* Sample explorer (screen 2): clicking a sample opens its info panel;
-     any number may be open at once; the screen unlocks once all were opened. */
-  function initSamples(screen) {
-    var samples = Array.prototype.slice.call(screen.querySelectorAll('.sample'));
-    var seen = {};
-    function checkGate() {
-      if (samples.every(function (b) { return seen[b.getAttribute('data-key')]; })) {
+      if (cards.every(function (c) { return explored[c.getAttribute('data-key')]; })) {
         screen._exploreDone = true;
         updateChrome();
         if (btnFwd) btnFwd.classList.add('nav-pulse');
       }
     }
-    samples.forEach(function (btn) {
-      var key  = btn.getAttribute('data-key');
-      var info = screen.querySelector('.sample__info[data-for="' + key + '"]');
-      if (!info) return;
-      var close = info.querySelector('.sample__close');
-      function open() {
-        info.hidden = false;
-        btn.classList.add('is-open');
-        btn.setAttribute('aria-expanded', 'true');
-        seen[key] = true;
+    function revealAll() { cards.forEach(function (c) { c.classList.add('in'); }); }
+
+    cards.forEach(function (card) {
+      function flip() {
+        card.classList.toggle('is-flipped');
+        card.classList.add('seen');                       // hide the "tap me" cue once used
+        card.setAttribute('aria-pressed', card.classList.contains('is-flipped') ? 'true' : 'false');
+        explored[card.getAttribute('data-key')] = true;   // flipped at least once
         checkGate();
       }
-      btn.addEventListener('click', open);
-      if (close) close.addEventListener('click', function (e) {
-        e.stopPropagation();
-        info.hidden = true;
-        btn.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-        btn.focus();
+      card.addEventListener('click', flip);
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
       });
     });
+
+    screen._onEnter = function () {
+      cards.forEach(function (c) {
+        c.classList.remove('is-flipped');
+        c.classList.remove('seen');
+        c.setAttribute('aria-pressed', 'false');
+      });
+      revealAll();     // all four together
+    };
   }
+
+  /* =====================================================================
+     MASS UNIT — interactions this unit adds. Everything above is the
+     shared foundation and is byte-identical to the volume unit.
+     ===================================================================== */
 
   /* Tabbed info panels (screen 7): same open/close contract, no gate —
      that screen is an optional detour and cannot be advanced from. */
@@ -672,7 +597,6 @@
 
   screens.forEach(function (s) {
     if (s.querySelector('.card')) initExplore(s);
-    if (s.querySelector('.sample')) initSamples(s);
     if (s.querySelector('.tab')) initTabs(s);
     if (s.getAttribute('data-type') === 'video') initVideo(s);
     if (s.getAttribute('data-type') === 'question' && s.querySelector('.dcard')) { initDragOrder(s); return; }
