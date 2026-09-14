@@ -132,7 +132,7 @@ body{
 .bubble__img{ position:absolute; inset:0; width:100%; height:100%; }
 .bubble__text{ position:absolute; left:0; right:0; top:26px; bottom:58px;
   display:flex; align-items:center; justify-content:center; text-align:center;
-  padding:0 36px; font-size:30px; line-height:1.3; font-weight:600; color:#1a1a1a; }
+  padding:0 36px; font-size:30px; line-height:1.2; font-weight:600; color:#1a1a1a; }
 .bubble__text p{ margin:0; }
 /* bubble caption positioned to an exact spot inside a floating .bubble (moves with it) */
 .bcap{ position:absolute; display:flex; align-items:center; justify-content:center;
@@ -183,7 +183,13 @@ body{
 .gloss-link:hover,
 .gloss-link[aria-expanded="true"]{ color:#0f3f70; }
 .gloss-link:focus-visible{ outline:var(--focus); outline-offset:3px; border-radius:4px; }
-.gloss-link__icon{ font-size:.8em; }
+/* info marker: a small i in a circle (inline-flex keeps the link underline off it) */
+.gloss-link__icon{ display:inline-flex; align-items:center; justify-content:center;
+  font-size:.38em;                      /* the "i" itself — small, so the ring reads as a ring */
+  width:1.9em; height:1.9em;            /* ≈ .72em of the link text */
+  border:.18em solid currentColor; border-radius:50%;
+  margin-right:.8em; vertical-align:.12em;
+  font-weight:800; font-style:normal; line-height:1; }
 .gloss-tip{
   position:absolute; right:0; top:calc(100% + 16px);
   width:320px; text-align:center; text-decoration:none;
@@ -195,6 +201,52 @@ body{
 .gloss-tip::after{ bottom:100%; border-bottom-color:#1f2a30; }
 .gloss-tip::before{ bottom:calc(100% - 3px); right:23px; border-width:9px; border-bottom-color:#fff; }
 .gloss-tip[hidden]{ display:none; }
+/* variant for a tip parked above the text it explains, so it covers nothing */
+.gloss-tip--above::after{ bottom:auto; top:100%; right:60px; border-bottom-color:transparent; border-top-color:#1f2a30; }
+.gloss-tip--above::before{ bottom:auto; top:calc(100% - 6px); right:63px; border-bottom-color:transparent; border-top-color:#fff; }
+
+/* the bubble art is click-through, but a glossary link inside it must stay clickable */
+.bubble .gloss-link,
+.bubble .jump{ pointer-events:auto; }
+
+/* top banner (the cream panel flush to the stage's top-right corner). Drawn in
+   CSS rather than stretching bubble-top.png, so the corner and the gradient stay
+   crisp at any width — geometry sampled from the volume unit's approved art:
+   flush top + right, 40px bottom-left radius, #E2E8D5 → #F0F0E4. */
+.topbanner{ position:absolute;   /* left/top/width/height come from the screen's inline layout */
+  background:linear-gradient(180deg,#E2E8D5 0%,#F0F0E4 100%);
+  border-bottom-left-radius:40px; }
+.topbanner__text{ position:absolute; inset:0; padding:18px 34px 14px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  font-size:36px; line-height:1.3; font-weight:600; color:#1a1a1a; }
+.topbanner__text p{ margin:0; }
+.topbanner .gloss-link{ pointer-events:auto; }
+
+/* screen 6's applet button: bigger than the shared .methodbtn default so the label
+   and the rock read clearly at stage scale (the "tap me" cue scales with it, and
+   still hides itself once the button has been pressed) */
+.methodbtn--icon{ min-height:124px; font-size:34px; gap:18px; padding:14px 30px; }
+.methodbtn--icon .methodbtn__icon{ width:82px; height:82px; }
+.methodbtn--icon::after{ left:-28px; bottom:-28px; width:76px; height:76px; background-size:44px; }
+
+/* glossary popup (screen 4 — "תנאי כבידה"): the cream info card from the
+   approved layout — same overlay as .modal, with the sparkle ✕ on the top-left corner */
+.glossmodal .modal__box{
+  width:1180px; max-width:92%;
+  background:#eaedde; color:#1a2230; border-radius:28px;
+  padding:46px 56px; text-align:right;
+  font-size:34px; line-height:1.45; font-weight:600;
+  box-shadow:0 18px 44px rgba(0,0,0,.45);
+}
+.glossmodal .modal__box p{ margin:0 0 14px; }
+.glossmodal .modal__box p:last-child{ margin-bottom:0; }
+.glossmodal .modal__box b{ font-weight:800; }
+.glossmodal .modal__close{
+  left:-30px; top:-30px; width:104px; height:104px;
+  background:none; border:0; border-radius:50%; padding:0;
+}
+.glossmodal .modal__close img{ width:100%; height:100%; display:block; }
+.glossmodal .modal__close:hover{ background:none; filter:brightness(1.12); }
 
 /* ---------------------------------------------------------------
    APPLET IFRAME (SME standalone applet embedded at design coords)
@@ -206,6 +258,10 @@ body{
 }
 /* once the experiment is done, the applet settles down + smaller so Shira's summary fits above it */
 .applet-frame.applet-settled{ transform:translateY(45px) scale(0.88); transform-origin:bottom center; }
+/* screens 4 and 9 have nothing held back to make room for, and their applets are
+   sized to a fixed box in the layout — so they must not shrink once the run is done */
+.screen[data-screen="4"] .applet-frame.applet-settled,
+.screen[data-screen="9"] .applet-frame.applet-settled{ transform:none; }
 
 /* ---------------------------------------------------------------
    QUESTION + OPTIONS (single choice)
@@ -249,6 +305,10 @@ body{
 /* all stem lines share one tight line spacing — bold lines are NOT extra-spaced */
 .qstem p{ margin:0; font-size:34px; line-height:1.4; color:#1f2a30; }
 .qstem p.q-bold{ font-weight:800; }
+/* screen 17: the stem shares its row with the balance photo, so the column is
+   narrow and the text runs long. Gfx/22 sets it at a ~40px line pitch to fit;
+   the type size is unchanged. */
+.qstem--tight p{ line-height:1.25; }
 
 /* ---------------------------------------------------------------
    DOT-STYLE OPTIONS (radio dot on the right, label to its left)
@@ -285,6 +345,32 @@ body{
 .options--dots .option.is-correct .dot::after{ content:'✓'; animation:mark-pop .32s ease both; }
 .options--dots .option.is-incorrect .dot{ border-color:var(--c-incorrect); background:var(--c-incorrect); }
 .options--dots .option.is-incorrect .dot::after{ content:'✕'; animation:mark-pop .32s ease both; }
+/* multi-select answers: square checkboxes (RTL — box at the right, label to its left) */
+.options--checks{
+  position:absolute; list-style:none; margin:0; padding:0;
+  display:flex; flex-direction:column; gap:10px;
+}
+.options--checks .option{
+  display:flex; align-items:flex-start; gap:16px; justify-content:flex-start;
+  background:none; border:none; box-shadow:none; padding:2px;
+  font-size:35px; line-height:1.25; font-weight:400; cursor:pointer;
+}
+.options--checks .dot{
+  width:30px; height:30px; border-radius:7px; box-sizing:border-box; margin-top:6px;
+  border:2.5px solid #64748b; background:#fff; flex:0 0 auto;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:21px; font-weight:800; line-height:1;
+  transition:background .25s ease, border-color .25s ease;
+}
+.options--checks .lbl{ color:#1f2a30; }
+.options--checks .option:hover .dot{ background:#eef1f4; }
+.options--checks .option[aria-checked="true"] .dot{ border-color:#64748b; background:#64748b; }
+.options--checks .option[aria-checked="true"] .dot::after{ content:'✓'; }
+.options--checks .option.is-correct .dot{ border-color:var(--c-correct); background:var(--c-correct); }
+.options--checks .option.is-correct .dot::after{ content:'✓'; animation:mark-pop .32s ease both; }
+.options--checks .option.is-incorrect .dot{ border-color:var(--c-incorrect); background:var(--c-incorrect); }
+.options--checks .option.is-incorrect .dot::after{ content:'✕'; animation:mark-pop .32s ease both; }
+
 @media (prefers-reduced-motion: reduce){
   .feedback{ animation:none; }
   .options--dots .dot{ transition:none; }
@@ -292,12 +378,11 @@ body{
   .options--dots .option.is-incorrect .dot::after{ animation:none; }
 }
 .options--dots .option:focus-visible{ outline:var(--focus); outline-offset:3px; border-radius:8px; }
-/* multi-select: square check-boxes instead of round radio dots */
-.options--checks .dot{ border-radius:6px; }
 
 /* fill-in-the-blank sentences with inline dropdowns */
 .qfill{ position:absolute; font-size:32px; line-height:1.55; font-weight:600; color:#1a1a1a; text-align:right; }
 .qfill p{ margin:0 0 18px; }
+.qfill p:last-child{ margin-bottom:0; }   /* no phantom gap under the last sentence */
 .qselect{ font-family:inherit; font-size:27px; font-weight:700; color:#185fa5; background:#eaf3fb;
   border:2px solid #2e9bd1; border-radius:10px; padding:3px 10px; margin:0 6px; vertical-align:middle; cursor:pointer; }
 .qselect:focus-visible{ outline:var(--focus); outline-offset:2px; }
@@ -377,6 +462,16 @@ body{
    flush on the card's actual corner */
 #fb-modal .modal__box{ width:1352px; }
 #fb-modal-11 .modal__box{ width:1352px; }
+/* the gravity applet keeps the same box it gets on screen 4, so its embedded
+   layout (which fits itself to the frame) renders identically in the popup */
+.appletmodal .modal__box{ width:1280px; }
+.appletmodal .modal__box iframe{ height:920px; border-radius:24px; overflow:hidden; background:transparent; }
+#scale-modal .modal__box{ width:1560px; }
+#scale-modal .modal__box iframe{ height:940px; }
+.appletmodal .modal__close{ left:-30px; top:-30px; width:104px; height:104px;
+  background:none; border:0; border-radius:50%; padding:0; }
+.appletmodal .modal__close img{ width:100%; height:100%; display:block; }
+.appletmodal .modal__close:hover{ background:none; filter:brightness(1.12); }
 .modal__box iframe{ width:100%; height:1000px; border:0; display:block; background:transparent; }
 .modal__close{ position:absolute; left:-18px; top:-18px; width:54px; height:54px; border-radius:50%;
   background:#0f2740; color:#fff; border:3px solid #fff; font-size:26px; font-weight:800; cursor:pointer; }
@@ -535,6 +630,11 @@ body{
 .feedback__body{ font-size:32px; line-height:1.4; margin:0; }
 .feedback.is-correct .feedback__title{ color:var(--c-correct); }
 .feedback.is-incorrect .feedback__title{ color:var(--c-incorrect); }
+/* "show me the answer" prompt inside the final feedback of a fill-in question */
+.fb-reveal{ font:inherit; background:none; border:0; padding:0; margin:0;
+  color:#185fa5; font-weight:800; text-decoration:underline; text-underline-offset:4px; cursor:pointer; }
+.fb-reveal:hover{ color:#0f3f70; }
+.fb-reveal:focus-visible{ outline:var(--focus); outline-offset:3px; border-radius:4px; }
 
 /* ---------------------------------------------------------------
    VIDEO PLACEHOLDER  (real <video> dropped in later)
@@ -603,18 +703,45 @@ body{
    time and so Arabic can reflow. Palette sampled from report-frame-3row.png */
 .report{ position:absolute; background:#edefe4; border-radius:22px; overflow:hidden;
   box-shadow:0 14px 40px rgba(0,0,0,.45); }
-.report__title{ background:#395436; color:#fff; font-size:34px; font-weight:800;
+.report__title{ background:#395436; color:#fff; font-size:48px; font-weight:800;
   text-align:center; display:flex; align-items:center; justify-content:center; }
-.report__head{ background:#17165b; color:#fff; font-size:22px; font-weight:700; display:flex; }
-.report__row{ display:flex; font-size:22px; font-weight:600; color:#2a2f33;
+.report__head{ background:#17165b; color:#fff; font-size:31px; font-weight:700; display:flex; }
+.report__row{ display:flex; font-size:31px; font-weight:600; color:#2a2f33;
   border-top:1px solid #d2d8ca; }
 .report__row > span,.report__head > span{ display:flex; align-items:center; justify-content:center;
-  padding:0 10px; text-align:center; }
+  padding:0 8px; text-align:center; }
 .report__row .val{ font-weight:700; }
 .report--4row .report__title{ height:70px; margin-top:37px; }
-.report--4row .report__head,.report--4row .report__row{ height:47px; }
-.report--3row .report__title{ height:100px; margin-top:25px; line-height:1.12; padding:0 16px; }
+.report--4row .report__head,.report--4row .report__row{ height:55px; }
+/* On screen 22 this table sits on the plate, where the base .report shadow
+   (40px blur) spreads into a haze instead of reading as a drop shadow. */
+.report--3row{ box-shadow:6px 10px 20px rgba(0,0,0,.38); }
+.report--3row .report__title{ height:132px; margin-top:25px; line-height:1.12; padding:0 16px; }
 .report--3row .report__row{ height:46px; }
+/* Cell offsets measured off Gfx/29 + Gfx/30: neither column is simply centred in
+   its half -- the reading sits right of centre, the label left of it. Type sizes
+   are inherited from .report so this table matches the four-row one. */
+.report--3row .report__row > span:first-child{ padding-inline-start:35px; }
+.report--3row .report__row .val{ padding-inline-end:17px; }
+/* Screens 22 and 23 lay their three-row table over its exported artwork instead of
+   drawing it in CSS, so the panel, the row rules and the corners come straight from
+   the plate. Both exports share the same green band (129px) and 47px rows and differ
+   only in the strip above the header, which --rt-strip carries:
+     report-22.png (358x316) strip 25  -> green 25-153,  rows 154-201-248-295
+     report-23.png (358x386) strip 95  -> green 95-223,  rows 224-271-318-365
+   The shadow is a filter, not a box-shadow, so it follows the artwork's rounded
+   silhouette rather than the (now transparent) element box. */
+.report--art{ background:none; border-radius:0; overflow:visible; box-shadow:none;
+  filter:drop-shadow(5px 9px 14px rgba(0,0,0,.42)); }
+.report__bg{ position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+.report--art .report__title{ background:none; margin-top:var(--rt-strip,95px); height:129px; }
+.report--art .report__row{ height:47px; border-top:0; }
+/* .report__bg is positioned, so it paints over in-flow siblings; lift the text
+   back above it rather than pushing the art to a negative layer (the title has to
+   sit on the opaque green band). */
+.report--art .report__title,.report--art .report__row{ position:relative; z-index:1; }
+/* the outlier reading is set heavier on both plates (Gfx/29, Gfx/30) */
+.report__row .val--flag{ font-weight:800; }
 /* the value cell floats in on its own once the matching bubble has landed */
 .report__row .val.float-in{ opacity:0; transform:translateY(10px); }
 .report__row .val.float-in.is-in{ opacity:1; transform:translateY(0); transition:opacity .45s ease, transform .45s ease; }
@@ -631,6 +758,57 @@ body{
 .dtable tfoot td{ background:#1d1b5e; height:18px; padding:0; }
 
 /* --- blinking highlight frames over the table (screens 26-27) ---------- */
+/* ---------------------------------------------------------------
+   GAS DATA TABLE (screens 27 + 28)
+   The plate art (../assets/table_slide32-34.png, 1522x360) carries the navy
+   header, the banded rows, the footer bar and the two tabs that hang below it.
+   Everything here is expressed as a share of that art so the same markup can be
+   dropped in at any width; the text stays live HTML so it still translates.
+   Bands:   header 0-60, rows 60-271, footer 272-293, tabs 294-360.
+   Columns (left to right on the art, i.e. LAST to FIRST in RTL source order):
+     0-349 | 349-668 | 668-991 | 991-1210 | 1210-1430 | 1430-1522
+   The two tabs sit under columns 1 and 3, and the red frames wrap those columns.
+   --------------------------------------------------------------- */
+.gtable{ position:absolute; }
+.gtable__bg{ position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+.gtable table{ position:absolute; left:0; top:0; width:100%; height:var(--gt-table-h);
+  border-collapse:collapse; table-layout:fixed; }
+/* Gfx/34 uses the same plate without the two call-out tabs: clip them off by
+   giving the box the height of the art down to the footer bar and letting the
+   background keep its own aspect. */
+.gtable--notabs{ overflow:hidden; }
+.gtable--notabs .gtable__bg{ height:auto; }
+.gtable th,.gtable td{ background:transparent; border:0; padding:0 2px; text-align:center; }
+/* the header labels all but fill their columns on the plate -- only ~4px of
+   slack either side -- so the cells get almost no padding or they wrap. */
+.gtable th{ color:#fff; font-weight:700; line-height:1.15; font-size:var(--gt-th); }
+.gtable td{ color:#17223a; font-weight:600; font-size:var(--gt-td); }
+.gtable thead tr{ height:var(--gt-head); }
+.gtable tbody tr{ height:var(--gt-row); }
+/* the two navy call-outs hanging under the highlighted columns */
+.gtable__tab{ position:absolute; top:80%; height:18.3%; color:#fff; font-weight:700;
+  font-size:var(--gt-td); line-height:1.18; text-align:center;
+  display:flex; align-items:center; justify-content:center; }
+.gtable__tab--a{ left:0; width:22.92%; }
+.gtable__tab--b{ left:43.86%; width:21.21%; }
+/* Red call-out frames: they wrap a column plus its tab, standing slightly proud of
+   the table top and bottom exactly as on the plates. The outline comes from the
+   supplied art (red-frame.png, 354x365, 9px stroke, ~50px radius) drawn as a
+   border-image so the stroke weight and the corner radius stay put whatever the
+   frame is scaled to -- a stretched <img> would thin the stroke on the long sides
+   and squash the corners. */
+.gtable__hl{ position:absolute; top:-5px; height:calc(100% + 10px); pointer-events:none;
+  box-sizing:border-box; border:60px solid transparent;
+  border-image:url(assets/images/red-frame.png?v=a3ab22a0) 60 stretch; }
+/* screen 27 flashes them to draw the eye; screen 28 leaves them static */
+.gtable__hl--flash{ animation:hl-blink 1.15s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){ .gtable__hl--flash{ animation:none; } }
+/* the frames straddle their column's own boundaries (col 1 = 0-22.93%,
+   col 3 = 43.89-65.11% of the art) so the 9px stroke sits centred on the edge and
+   the frame wraps the column and its tab exactly, top to bottom */
+.gtable__hl--a{ left:-5px; width:calc(22.93% + 10px); }
+.gtable__hl--b{ left:calc(43.89% - 5px); width:calc(21.22% + 10px); }
+
 .hl-frame{ position:absolute; border:5px solid #d63a2f; border-radius:10px; pointer-events:none;
   animation:hl-blink 1.15s ease-in-out infinite; }
 @keyframes hl-blink{ 0%,100%{ opacity:1; } 50%{ opacity:.18; } }
@@ -643,20 +821,57 @@ body{
 .panel__close img{ width:100%; height:100%; }
 .panel__close:focus-visible{ outline:var(--focus); outline-offset:2px; }
 
-/* --- tabbed info panels (screen 7, מד כוח) ----------------------------- */
-.tab{ position:absolute; border:0; border-radius:14px; background:#f2f6f8; color:#132433;
-  font-size:26px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.35); }
-.tab:hover,.tab[aria-expanded="true"]{ background:#d8ecf7; }
-.tab:focus-visible{ outline:var(--focus); outline-offset:3px; }
-.tabpanel{ position:absolute; background:rgba(247,249,250,.96); border-radius:16px; padding:24px 22px;
-  font-size:23px; line-height:1.35; font-weight:600; color:#1a2230; text-align:right;
-  box-shadow:0 12px 30px rgba(0,0,0,.4); animation:fb-in-left .3s ease both; }
+/* --- tabbed info panels (screen 8, מד-הכוח) -------------------------
+   Built on the approved art: panel-11-tab.png for the closed pill and
+   panel-11-open.png for the drawer that drops under it. Both are placed at
+   their native 381px width so nothing is resampled. */
+/* z-index keeps the pill above the (decorative, but click-catching) instrument
+   image that overlaps this band — without it only the pill's top strip was clickable */
+.tab{ position:absolute; z-index:5; border:0; padding:0; background:none; cursor:pointer; font-family:inherit; }
+.tab__art{ position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none; }
+/* the label sits inside the pill's green body (rows 14-67 of the 89px art) */
+.tab__label{ position:absolute; left:0; right:0; top:14px; height:54px;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:33px; font-weight:700; line-height:1; }
+.tab:focus-visible{ outline:var(--focus); outline-offset:4px; border-radius:44px; }
+/* close badge — shown only while this tab's drawer is open; centred on the pill's
+   green body (rows 14-67 of the art) at its left edge */
+.tab__x{ position:absolute; left:2px; top:18px; width:62px; height:62px;
+  display:none; pointer-events:none; }
+.tab[aria-expanded="true"] .tab__x{ display:block; }
+/* "tap me" cue on each pill until it has been opened once */
+.tab::after{ content:''; position:absolute; z-index:7; pointer-events:none;
+  left:-16px; bottom:-4px; width:48px; height:48px; border-radius:50%;
+  background:rgba(15,39,64,.92) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6C13 6.67 12.33 6 11.5 6S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.92-1.38z'/></svg>") center/28px no-repeat;
+  box-shadow:0 4px 14px rgba(0,0,0,.4); animation:tap-pulse2 1.3s ease-in-out 4; }
+.tab.tab-used::after{ display:none; }
+.tabpanel{ position:absolute; z-index:4; }
 .tabpanel[hidden]{ display:none; }
+.tabpanel__art{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+/* the drawer text is centred in the panel; panels hold 4 or 5 lines depending on
+   the tab, and the box is sized for the tallest of them (see Gfx/11b) */
+.tabpanel__text{ position:absolute; left:0; right:0; top:22px; bottom:22px; padding:0 18px;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  font-size:32px; line-height:1.17; font-weight:600; color:#1a2230; }
+.tabpanel__text p{ margin:0; }
 
 /* --- inline jump link ("לחצו" / "מד כוח" cross-references) ------------- */
 .jump{ color:#185fa5; font-weight:800; text-decoration:underline; background:none; border:0;
   padding:0; font:inherit; cursor:pointer; }
 .jump:focus-visible{ outline:var(--focus); outline-offset:2px; }
+
+/* --- photo captions over the balance plate (screens 16/17) -----------------
+   The approved reference (../assets/slide_17_with_captions.png) sets these as
+   white bold text with a hard dark outline sitting directly on the photo -- no
+   pill, no panel. A ring of hard text-shadows is used instead of
+   -webkit-text-stroke so the outline renders identically in the older embedded
+   browsers some LMS players still ship. */
+.slabel--out{ color:#fff; font-weight:700; white-space:nowrap; line-height:1;
+  text-shadow:
+    -2px -2px 0 #14161a,  0 -2px 0 #14161a,  2px -2px 0 #14161a,
+    -2px  0   0 #14161a,                     2px  0   0 #14161a,
+    -2px  2px 0 #14161a,  0  2px 0 #14161a,  2px  2px 0 #14161a,
+     0 3px 7px rgba(0,0,0,.45); }
 
 /* --- video name tags (screen 1) ---------------------------------------- */
 .nametag{ position:absolute; color:#fff; text-align:center; text-shadow:0 2px 10px rgba(0,0,0,.7); }

@@ -119,6 +119,7 @@
 
   /* ---------- FLOAT-IN REVEAL ---------- */
   var REVEAL_SEL = '.speech, .qstem, .options, .bubble, .applet-frame, [data-reveal]';
+  var FLOAT_IN_MS = 600;   // .float-in transition (.5s) + a beat, see styles.css
   var revealGen = 0;
   function revealScreen(s) {
     revealGen++; var gen = revealGen;
@@ -126,6 +127,20 @@
     els.sort(function (a, b) {
       return (+a.getAttribute('data-reveal-order') || 0) - (+b.getAttribute('data-reveal-order') || 0);
     });
+    // Revisiting a screen -- coming back from the optional מד-הכוח side-trip, or
+    // any back-navigation -- presents it already settled. The learner has watched
+    // this play in once; replaying the float-in sequence (and, on a dialogue screen,
+    // making them wait out the gate again) just costs them time.
+    if (s._revealed) {
+      els.forEach(function (el) {
+        el.classList.add('float-in');                       // keep is-in, so nothing transitions
+        if (!el.hasAttribute('data-hold')) el.classList.add('is-in');
+      });
+      if (s.getAttribute('data-gate') === 'dialogue') s._dialogueDone = true;
+      settleApplet(s);
+      return;
+    }
+    s._revealed = true;
     els.forEach(function (el) { el.classList.add('float-in'); el.classList.remove('is-in'); });
     var maxDelay = 0;
     els.forEach(function (el) {
@@ -138,19 +153,25 @@
       if (delay > maxDelay) maxDelay = delay;
       setTimeout(function () { if (gen === revealGen) el.classList.add('is-in'); }, delay);
     });
-    // dialogue-gated screens: forward arrow stays hidden until the whole reveal sequence has landed
+    // dialogue-gated screens: the forward arrow stays hidden until the whole reveal
+    // sequence has landed -- maxDelay is when the LAST element starts floating in, so
+    // wait out its .float-in transition (see FLOAT_IN_MS) before opening the gate,
+    // otherwise the arrow appears while the final bubble is still fading up.
     if (s.getAttribute('data-gate') === 'dialogue') {
       s._dialogueDone = false;
       setTimeout(function () {
         if (gen !== revealGen) return;
         s._dialogueDone = true;
         if (screens[current] === s) updateChrome();
-      }, maxDelay);
+      }, maxDelay + FLOAT_IN_MS);
     }
-    if (s._appletDone) {                // returning to a completed applet screen: keep it settled + Shira shown
-      var frr = s.querySelector('.applet-frame'); if (frr) frr.classList.add('applet-settled');
-      revealHeld(s);
-    }
+    settleApplet(s);
+  }
+  // returning to a completed applet screen: keep it settled + any held element shown
+  function settleApplet(s) {
+    if (!s._appletDone) return;
+    var fr = s.querySelector('.applet-frame'); if (fr) fr.classList.add('applet-settled');
+    revealHeld(s);
   }
   // reveal any held elements on a screen (used after the applet experiment completes)
   function revealHeld(s) {
@@ -173,8 +194,16 @@
   // Keyboard nav must honour the same gates as the arrow buttons — otherwise
   // ArrowLeft walks straight past every unanswered question and the learner
   // reaches the end with a score of 0.
-  function next() { if (btnFwd && btnFwd.disabled) return; goTo(current + 1); }
-  function prev() { if (btnBack && btnBack.disabled) return; goTo(current - 1); }
+  // A screen may route the arrows past an optional side-trip screen (one that is
+  // only reachable from a link in the body text) via data-next / data-prev, which
+  // name the 1-based target screen instead of the neighbouring index.
+  function step(dir) {
+    var s = screens[current];
+    var to = s.getAttribute(dir > 0 ? 'data-next' : 'data-prev');
+    return to ? (parseInt(to, 10) || 1) - 1 : current + dir;
+  }
+  function next() { if (btnFwd && btnFwd.disabled) return; goTo(step(1)); }
+  function prev() { if (btnBack && btnBack.disabled) return; goTo(step(-1)); }
 
   if (btnFwd)  btnFwd.addEventListener('click', next);
   if (btnBack) btnBack.addEventListener('click', prev);
@@ -232,7 +261,7 @@
       // feedback is gone again (retrying) -- drop the settled/shifted layout state
       screen.classList.remove('fb-showing');
     }
-    function showFb(correctState, title, body) {
+    function showFb(correctState, title, body, bodyIsHtml) {
       // On a correct answer, some screens swap to a "report/result" view:
       // change the background, reveal the .fb-report overlay, hide the question.
       if (correctState) {
@@ -245,7 +274,8 @@
       fb.classList.toggle('is-correct', correctState);
       fb.classList.toggle('is-incorrect', !correctState);
       if (fbTitle) fbTitle.textContent = title;
-      if (fbBody)  fbBody.textContent = body;
+      // body is plain text except for the "reveal the answer" prompt, which carries a button
+      if (fbBody) { if (bodyIsHtml) fbBody.innerHTML = body; else fbBody.textContent = body; }
       // feedback is visible (first try or final) -- drives CSS-scoped layout shifts,
       // e.g. screen 17/19's rock image settling into its "feedback showing" spot.
       // Question text + options are NOT hidden by this -- they stay visible throughout.
@@ -296,16 +326,38 @@
         attempts++;
         if (attempts >= MAX_ATTEMPTS) {
           var partial = (nCorrect / selects.length) * points;   // partial credit per blank
-          selects.forEach(function (s) {
-            s.value = s.getAttribute('data-answer');
-            s.classList.add('is-correct'); s.classList.remove('is-incorrect'); s.disabled = true;
-          });
-          showFb(false, nCorrect > 0 ? 'כמעט!' : 'זו טעות', screen.getAttribute('data-fb-incorrect') || '');
+          // Out of attempts: LEAVE the learner's own answers on screen (right in green,
+          // wrong in red) so they can see what they got wrong. The correct answers are
+          // filled in only when they ask for them, via the reveal button in the feedback.
+          selects.forEach(function (s) { s.disabled = true; });
+          var lead = (nCorrect > 0 ? screen.getAttribute('data-fb-partial')
+                                   : screen.getAttribute('data-fb-none'))
+                     || screen.getAttribute('data-fb-incorrect') || '';
+          showFb(false, nCorrect > 0 ? 'כמעט!' : 'זו טעות',
+                 lead + ' <button type="button" class="fb-reveal">לחצו</button> לקבלת התשובה הנכונה', true);
           finishQuestion(false, partial);
         } else {
           showFb(false, 'זו טעות', 'נסו שוב.');
           check.hidden = false;
         }
+      });
+      // "show me the answer": fills every blank in, then clears the feedback away --
+      // the script has no post-reveal text, so the learner is left with the completed
+      // paragraph and the forward arrow (already un-gated by finishQuestion)
+      if (fb) fb.addEventListener('click', function (e) {
+        if (!e.target || !e.target.classList.contains('fb-reveal')) return;
+        e.preventDefault();
+        selects.forEach(function (s) {
+          s.value = s.getAttribute('data-answer');
+          s.classList.add('is-correct'); s.classList.remove('is-incorrect');
+        });
+        // some questions carry a written explanation for after the reveal; where the
+        // script has none, the feedback simply clears away
+        var ans = screen.getAttribute('data-fb-answer');
+        if (ans) { showFb(true, 'התשובה הנכונה:', ans); return; }
+        fb.hidden = true;
+        fb.classList.remove('is-correct', 'is-incorrect');
+        screen.classList.remove('fb-showing');
       });
       return;   // dropdown question fully handled
     }
@@ -328,6 +380,23 @@
       opt.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(); }
       });
+    });
+
+    // "show me the answer" in the final feedback: marks every correct option and
+    // clears the feedback away, leaving the learner with the answer + the forward arrow
+    if (fb) fb.addEventListener('click', function (e) {
+      if (!e.target || !e.target.classList.contains('fb-reveal')) return;
+      e.preventDefault();
+      options.forEach(function (o) {
+        var v = o.getAttribute('data-value');
+        var isRight = correctSet.length ? correctSet.indexOf(v) >= 0 : v === correct;
+        if (isRight) { o.classList.add('is-correct'); o.classList.remove('is-incorrect'); }
+      });
+      var ans = screen.getAttribute('data-fb-answer');
+      if (ans) { showFb(true, 'התשובה הנכונה:', ans); return; }
+      fb.hidden = true;
+      fb.classList.remove('is-correct', 'is-incorrect');
+      screen.classList.remove('fb-showing');
     });
 
     if (hintBtn && hint) hintBtn.addEventListener('click', function () {
@@ -360,8 +429,21 @@
           var nWrong = sel.length - nCorrect;
           var frac = Math.max(0, (nCorrect - nWrong) / correctSet.length);
           var partial = frac * points;
-          options.forEach(function (o) { if (correctSet.indexOf(o.getAttribute('data-value')) >= 0) o.classList.add('is-correct'); });
-          showFb(false, frac > 0 ? 'כמעט!' : 'זו טעות', screen.getAttribute('data-fb-incorrect') || '');
+          // Same two-step flow as the fill-in questions: mark only what the learner
+          // actually picked (right green, wrong red) so they can see where they went
+          // wrong; the answers they missed stay blank until they ask for them.
+          options.forEach(function (o) {
+            if (o.getAttribute('aria-checked') === 'true' && correctSet.indexOf(o.getAttribute('data-value')) >= 0)
+              o.classList.add('is-correct');
+          });
+          // the MESSAGE depends on whether anything was picked correctly, not on the
+          // credit fraction -- one right pick among wrong ones is still "partly right"
+          // even though the (correct − wrong) score floors at zero
+          var lead = (nCorrect > 0 ? screen.getAttribute('data-fb-partial')
+                                   : screen.getAttribute('data-fb-none'))
+                     || screen.getAttribute('data-fb-incorrect') || '';
+          showFb(false, nCorrect > 0 ? 'כמעט!' : 'זו טעות',
+                 lead + ' <button type="button" class="fb-reveal">לחצו</button> לקבלת התשובה הנכונה', true);
           finishQuestion(false, partial);
         } else {
           showFb(false, 'זו טעות', 'נסו שוב.');
@@ -562,19 +644,17 @@
 
   /* Tabbed info panels (screen 7): same open/close contract, no gate —
      that screen is an optional detour and cannot be advanced from. */
+  /* Each pill toggles its own drawer; the ✕ badge that appears on an open pill is
+     part of the pill, so clicking anywhere on it closes the drawer again. */
   function initTabs(screen) {
     Array.prototype.forEach.call(screen.querySelectorAll('.tab'), function (tab) {
       var panel = screen.querySelector('.tabpanel[data-for="' + tab.getAttribute('data-panel') + '"]');
       if (!panel) return;
-      var close = panel.querySelector('.panel__close');
       tab.addEventListener('click', function () {
-        panel.hidden = false;
-        tab.setAttribute('aria-expanded', 'true');
-      });
-      if (close) close.addEventListener('click', function () {
-        panel.hidden = true;
-        tab.setAttribute('aria-expanded', 'false');
-        tab.focus();
+        var open = tab.getAttribute('aria-expanded') === 'true';
+        panel.hidden = open;
+        tab.setAttribute('aria-expanded', open ? 'false' : 'true');
+        tab.classList.add('tab-used');   // drop the "tap me" cue once it has been used
       });
     });
   }
@@ -710,6 +790,7 @@
 
   /* ---------- applet iframes: auto-fit height to content (no scrollbar) ---------- */
   Array.prototype.forEach.call(document.querySelectorAll('iframe.applet-frame'), function (f) {
+    if (f.hasAttribute('data-fixed-height')) return;   // sized to a box in the layout; the applet fits itself to it
     f.addEventListener('load', function () {
       try {
         var d = f.contentDocument || f.contentWindow.document;
@@ -737,7 +818,9 @@
       Array.prototype.forEach.call(document.querySelectorAll('.gloss-tip'), function (t) { t.hidden = true; });
     }
     links.forEach(function (btn) {
-      var tip = btn.nextElementSibling;
+      // the tip is looked up by aria-controls: it is rarely the link's immediate
+      // sibling (the link usually sits mid-sentence inside a <p>)
+      var tip = document.getElementById(btn.getAttribute('aria-controls') || '');
       if (!tip || !tip.classList.contains('gloss-tip')) return;
       btn.addEventListener('click', function (e) {
         e.preventDefault();

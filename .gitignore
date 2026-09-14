@@ -6,3 +6,9 @@ dev_index.html
 Thumbs.db
 desktop.ini
 *~
+
+# dev-only preview server config
+.claude/
+
+# standalone web build of the rock-drop applet; nothing in the lomda references it
+applets/gravity-rock-drop-web/

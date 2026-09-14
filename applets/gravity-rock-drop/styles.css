@@ -11,13 +11,13 @@ body{background:#000;color:#fff;overflow-x:hidden}
 header{text-align:center;margin-bottom:32px}
 h1{margin:0 0 12px;color:#CCFF00;font-size:clamp(30px,4vw,52px);line-height:1.1;font-weight:700}
 header p{font-size:clamp(20px,2.2vw,28px);line-height:1.45;margin:0;font-weight:400}
-header p span{color:#CCFF00;font-weight:700}
+header p.cue{color:#CCFF00;font-weight:700}
 .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .gravity-card{display:flex;flex-direction:column;min-width:0}
 .card-head{display:flex;flex-direction:column;align-items:center;margin-bottom:12px;padding:0 4px}
 .planet-icon{width:112px;height:112px;object-fit:contain;margin-bottom:4px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.6))}
-.card-head h2{font-size:24px;line-height:1.1;margin:2px 0 0;font-weight:700}
-.card-head p{font-size:24px;line-height:1.2;color:rgba(255,255,255,.7);margin:2px 0 0;font-weight:400}
+.card-head h2{font-size:34px;line-height:1.1;margin:4px 0 0;font-weight:700}
+.card-head p{font-size:29px;line-height:1.2;color:rgba(255,255,255,.7);margin:4px 0 0;font-weight:400}
 .scene{position:relative;width:100%;aspect-ratio:945/1146;border-radius:16px;overflow:hidden}
 .scene-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .gravity-rock{position:absolute;z-index:10;top:25%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;filter:drop-shadow(0 6px 8px rgba(0,0,0,.55))}
@@ -34,20 +34,36 @@ header p span{color:#CCFF00;font-weight:700}
 .controls{margin-top:28px;display:flex;justify-content:center}
 button{position:relative;display:inline-flex;align-items:center;justify-content:center;border:0;background:transparent;padding:0;cursor:pointer;font-family:'Assistant',sans-serif;font-weight:400;transition:transform .15s}
 button:hover{transform:scale(1.05)}button:active{transform:scale(.95)}
-.button-bg{height:80px;width:auto;display:block;user-select:none;pointer-events:none;filter:drop-shadow(0 0 20px rgba(174,238,238,.5))}
-.button-rock{position:absolute;right:10%;top:50%;transform:translateY(-50%);height:40px;width:40px;object-fit:contain;filter:drop-shadow(0 0 .6px #000) drop-shadow(0 0 .6px #000) drop-shadow(0 0 .6px #000);pointer-events:none}
-button span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#000;font-size:24px;font-weight:400;pointer-events:none}
+.button-bg{height:96px;width:auto;display:block;user-select:none;pointer-events:none;filter:drop-shadow(0 0 20px rgba(174,238,238,.5))}
+.button-rock{flex:0 0 auto;height:46px;width:46px;object-fit:contain;filter:drop-shadow(0 0 .6px #000) drop-shadow(0 0 .6px #000) drop-shadow(0 0 .6px #000);pointer-events:none}
+button .button-face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:16px;pointer-events:none}
+button #buttonLabel{color:#000;font-size:32px;font-weight:600;white-space:nowrap}
 @keyframes dropEarth{0%{top:25%}100%{top:75%}}
 @keyframes dropMoon{0%{top:25%}100%{top:75%}}
 @keyframes floating{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(12px,-12px) rotate(12deg)}50%{transform:translate(-8px,16px) rotate(24deg)}75%{transform:translate(-16px,-8px) rotate(12deg)}100%{transform:translate(0,0) rotate(0)}}
 @keyframes dustSplash{0%{transform:translateX(-50%) scale(.5);opacity:.8}100%{transform:translateX(-50%) scale(2);opacity:0}}
 @keyframes sandSpray{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.25);opacity:0}}
 @keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
-@media(max-width:800px){.app{width:calc(100% - 24px);margin:12px auto 24px;padding:20px}.cards{grid-template-columns:1fr;gap:24px}.planet-icon{width:90px;height:90px}.card-head h2,.card-head p{font-size:24px}.button-bg{height:68px}.button-rock{height:32px;width:32px}button span{font-size:22px}}
+@media(max-width:800px){.app{width:calc(100% - 24px);margin:12px auto 24px;padding:20px}.cards{grid-template-columns:1fr;gap:24px}.planet-icon{width:90px;height:90px}.card-head h2,.card-head p{font-size:24px}.button-bg{height:68px}.button-rock{height:32px;width:32px}button #buttonLabel{font-size:22px}}
 
-/* embedded in the lomda stage: the shell supplies the heading + tooltip,
-   so trim the outer chrome and let the screen background show through */
-html.embed,html.embed body{background:transparent}
+/* embedded in the lomda stage: the shell supplies the background + the
+   glossary tooltip, so trim the outer card and let the screen show through */
+html.embed,html.embed body{background:transparent;height:100%;min-height:0}
 html.embed .starfield{background:radial-gradient(ellipse at 50% 25%,rgba(10,10,24,.92) 0%,rgba(0,0,0,.92) 72%)}
-html.embed header{display:none}
-html.embed .app{margin:0 auto;padding:18px 32px 8px}
+/* embedded: the lomda gives the applet a fixed box in the screen layout, so fill
+   that box exactly (no page scroll, no full-bleed spill) instead of flowing.
+   The heading stays and everything is scaled down to fit the box; the scenes keep
+   their source aspect so the whole environment art shows, uncropped. */
+html.embed .app{width:100%;max-width:none;height:100%;margin:0;padding:16px 30px 14px;
+  background:transparent;border-radius:0;backdrop-filter:none;
+  display:flex;flex-direction:column}
+html.embed header{margin-bottom:14px}
+html.nosub .lede{display:none}
+html.embed h1{font-size:48px;margin:0 0 8px}
+html.embed header p{font-size:27px;line-height:1.35}
+html.embed .cards{gap:30px}
+html.embed .gravity-card{min-height:0}
+html.embed .planet-icon{width:72px;height:72px;margin-bottom:2px}
+html.embed .card-head{margin-bottom:10px}
+html.embed .controls{margin-top:14px}
+html.embed .button-bg{height:88px}

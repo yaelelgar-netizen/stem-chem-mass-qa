@@ -11,13 +11,53 @@
 @font-face{font-family:AssistantLocal;src:url('assets/Assistant-Light.ttf') format('truetype');font-weight:300;font-style:normal;font-display:block}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#080b14;color:#fff}
-html.embed,html.embed body{background:transparent}
+/* embedded in the lomda: the screen gives the applet a fixed box, so fit the whole
+   simulation inside it instead of flowing down the page. The two scales are capped
+   by the height available, while the readout panels run the full width of the box —
+   they carry the wordiest text and were unreadable when squeezed to the card width. */
+html.embed,html.embed body{background:transparent;height:100%;min-height:0}
 html.embed #starfield{background:rgba(8,11,20,.92)}
-html.embed main{min-height:0;padding:4px 16px 6px}
+html.embed main{min-height:0;height:100%;max-width:1420px;padding:8px 16px 6px;justify-content:flex-start}
 html.embed header{display:none}
-html.embed footer{padding:2px 0 6px;margin-top:4px}
-html.embed .desc-box{min-height:62px;padding:6px 12px}
-html.embed .stat{min-height:62px;padding:6px 18px}
+/* a popup carries the full heading (?head=1); inline on a screen the dialogue above
+   the applet already introduces it */
+html.embed.withhead header{display:flex;flex:0 0 auto;gap:6px;margin-bottom:10px}
+html.embed.withhead .kicker{font-size:16px}
+html.embed.withhead h1{font-size:38px}
+html.embed.withhead .subtitle{font-size:24px;line-height:1.35}
+/* the readout panels are sized for the WORDIEST step and never shrink, so their text
+   can never be clipped; the two scales take whatever height is left over */
+html.embed .cards{flex:1 1 auto;min-height:0;width:100%;max-width:1060px;margin:0 auto;gap:20px}
+html.embed .sim{display:flex;flex-direction:column;align-items:center;min-height:0}
+html.embed .sim-head{flex:0 0 auto}
+html.embed .stage{flex:1 1 auto;min-height:0;width:auto;margin:0 auto}
+html.embed .sim-head img{width:48px;height:48px}
+html.embed .sim-head h2{font-size:27px}
+html.embed .sim-head span{font-size:18px}
+html.embed footer{flex:0 0 auto;padding:4px 0 8px;margin-top:8px}
+html.embed .desc-box{min-height:150px;padding:26px 34px}
+html.embed .badge{font-size:30px;min-width:96px;margin-right:20px}
+html.embed .desc{font-size:23px;line-height:1.32;padding-left:20px}
+/* But_1/But_2.png are pill graphics with a 51px glow margin baked in; stretching
+   them to arbitrary button sizes distorted the corners and shrank the visible
+   lime to 2/3 of the box. Drawn in CSS instead — same colours, smooth at any size. */
+/* the buttons used to stretch to the full height of the readout row, which made them
+   tower over it; they now sit centred at a fixed size, and the row gives more of its
+   width to the step panel */
+html.embed .controls{grid-template-columns:3.4fr 1.6fr}
+html.embed .action-area{align-items:center}
+html.embed .action,html.embed .reset{font-size:23px;min-height:0;height:96px;
+  background-image:none;background-color:#D8FF00;border-radius:22px;
+  box-shadow:0 0 18px 3px rgba(166,232,254,.45);}
+html.embed .action{padding:0 16px}
+html.embed .reset{padding:0 18px}
+html.embed .action img{height:46px;width:46px}
+html.embed .action:hover,html.embed .reset:hover{background-color:#E2FF3A}
+html.embed .action img{height:62px;width:62px}
+html.embed .stats{margin-top:14px;gap:14px}
+html.embed .stat{min-height:120px;padding:22px 40px}
+html.embed .stat-label{font-size:21px;margin-bottom:4px}
+html.embed .stat-value{font-size:30px}
 body{font-family:AssistantLocal,Assistant,sans-serif;overflow-x:hidden}
 button{font:inherit}
 #starfield{position:fixed;inset:0;z-index:0;overflow:hidden;background:#080b14;pointer-events:none}
@@ -26,16 +66,16 @@ button{font:inherit}
 .glow{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.6;background:radial-gradient(900px 500px at 20% -10%,rgba(56,189,248,.14),transparent 60%),radial-gradient(800px 500px at 85% 0%,rgba(129,140,248,.14),transparent 60%)}
 main{position:relative;z-index:2;max-width:1152px;margin:0 auto;padding:32px 16px 16px;min-height:100vh;display:flex;flex-direction:column}
 header.hero{text-align:center;display:flex;flex-direction:column;gap:12px}
-.kicker{margin:0;color:#D0FF00;font-size:11px;letter-spacing:.35em;font-weight:400}
-h1{margin:0;color:#D0FF00;font-size:clamp(30px,4vw,48px);line-height:1.1;font-weight:700;letter-spacing:-.02em}
-.subtitle{margin:0;color:#fff;font-size:clamp(15px,1.55vw,17.6px);line-height:1.6;font-weight:400}
+.kicker{margin:0;color:#D0FF00;font-size:14px;letter-spacing:.35em;font-weight:400}
+h1{margin:0;color:#D0FF00;font-size:clamp(30px,4vw,52px);line-height:1.1;font-weight:700;letter-spacing:-.02em}
+.subtitle{margin:0;color:#fff;font-size:clamp(18px,2vw,24px);line-height:1.5;font-weight:400}
 .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:32px}
 .sim{min-width:0}
 .sim-head{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;padding-bottom:1px}
 .sim-head img{width:84px;height:84px;object-fit:contain;flex:none}
 .sim-head-copy{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.sim-head h2{margin:0;color:#fff;font-size:26px;line-height:1;font-weight:700;letter-spacing:-.02em}
-.sim-head span{color:rgba(255,255,255,.8);font-size:16px;line-height:1;white-space:pre-wrap}
+.sim-head h2{margin:0;color:#fff;font-size:34px;line-height:1;font-weight:700;letter-spacing:-.02em}
+.sim-head span{color:rgba(255,255,255,.8);font-size:22px;line-height:1.2;white-space:pre-wrap}
 .stage{position:relative;overflow:hidden;box-shadow:0 20px 60px -25px rgba(0,0,0,.8);aspect-ratio:1762/1471;margin-top:0}
 .stage-bg{position:absolute;inset:0;background-position:center;background-repeat:no-repeat;background-size:100% 100%}
 .stage svg{position:absolute;inset:0;width:100%;height:100%;padding:16px}
@@ -52,29 +92,32 @@ h1{margin:0;color:#D0FF00;font-size:clamp(30px,4vw,48px);line-height:1.1;font-we
 .rock-pop.hidden{opacity:0;transform:translateY(-14px)}
 .rock-pop.visible{opacity:1;transform:translateY(0)}
 footer{margin-top:8px;border-radius:28px;border:1px solid rgba(255,255,255,.05);background:rgba(15,23,42,.60);backdrop-filter:blur(8px);padding:4px 0 2vh;overflow:hidden;box-shadow:0 20px 60px -30px rgba(0,0,0,.9)}
-.controls{display:grid;grid-template-columns:2fr 1fr;gap:12px}
-.desc-box{min-height:90px;background:url('assets/TextBox_1.png') center/100% 100% no-repeat;display:flex;align-items:center;gap:12px;padding:12px}
-.badge{flex:none;color:#fff;font-weight:700;font-size:20px;line-height:1.15;margin-right:24px;min-width:66px;text-align:center}
-.desc{margin:0;color:#fff;font-size:14.4px;line-height:.95;font-weight:400;border-left:1px solid rgba(255,255,255,.2);padding-left:12px;opacity:1;transition:opacity .3s,transform .3s}
+.controls{display:grid;grid-template-columns:3fr 2fr;gap:12px}
+.desc-box{min-height:124px;background:url('assets/TextBox_1.png') center/100% 100% no-repeat;display:flex;align-items:center;gap:12px;padding:12px}
+.badge{flex:none;color:#fff;font-weight:700;font-size:24px;line-height:1.15;margin-right:24px;min-width:76px;text-align:center}
+.desc{margin:0;color:#fff;font-size:18px;line-height:1.3;font-weight:400;border-left:1px solid rgba(255,255,255,.2);padding-left:12px;opacity:1;transition:opacity .3s,transform .3s}
 .action-area{display:flex;justify-content:space-between;gap:10px}
 .action,.reset{border:0;background-color:transparent;background-repeat:no-repeat;background-position:center;background-size:100% 100%;min-height:90px;cursor:pointer;transition:transform .18s ease;display:flex;align-items:center;justify-content:center;gap:12px}
-.action{background-image:url('assets/But_1.png');color:#020617;font-weight:400;padding:0 24px;flex:1;min-width:0}
-.reset{background-image:url('assets/But_2.png');color:#000;padding:0 28px;width:40%;min-width:125px}
+.action{background-image:url('assets/But_1.png');color:#020617;font-weight:600;font-size:20px;padding:0 24px;flex:1;min-width:0}
+.reset{background-image:url('assets/But_2.png');color:#000;font-weight:600;font-size:20px;padding:0 28px;width:32%;min-width:110px}
 .action:hover,.reset:hover{transform:scale(1.03)}
 .action:active,.reset:active{transform:scale(.96)}
-.action img{height:36px;width:36px;object-fit:contain;flex:none}
+.action img{height:60px;width:60px;object-fit:contain;flex:none}
 .reset svg{width:17px;height:17px;flex:none}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
 .stat{min-height:90px;padding:12px 24px;text-align:center;display:flex;flex-direction:column;justify-content:center;background:url('assets/TextBox_2_3_4.png') center/100% 100% no-repeat}
-.stat-label{font-size:11px;line-height:1.2;letter-spacing:.04em;color:#fff;margin-bottom:2px}
-.stat-value{font-size:16px;line-height:1.2;font-weight:400;color:#D0FF00}
+.stat-label{font-size:13px;line-height:1.2;letter-spacing:.04em;color:#fff;margin-bottom:2px}
+.stat-value{font-size:20px;line-height:1.2;font-weight:400;color:#D0FF00}
 svg text{font-family:AssistantLocal,Assistant,sans-serif}
-@media(max-width:800px){main{padding-top:24px}.cards{grid-template-columns:1fr;gap:20px}.controls{grid-template-columns:1fr}.action-area{min-height:90px}.reset{width:34%}.stats{grid-template-columns:1fr}.sim-head h2{font-size:24px}.sim-head span{font-size:14px}}
-@media(max-width:480px){.subtitle{font-size:14px}.desc-box{min-height:86px}.badge{font-size:17px;margin-right:10px;min-width:54px}.desc{font-size:12.6px}.action,.reset{min-height:82px}.reset{min-width:110px;padding:0 14px}.action{padding:0 12px}.action img{height:31px;width:31px}.stage svg{padding:8px}}
+@media(max-width:800px){main{padding-top:24px}.cards{grid-template-columns:1fr;gap:20px}.controls{grid-template-columns:1fr}.action-area{min-height:90px}.reset{width:34%}.stats{grid-template-columns:1fr}.sim-head h2{font-size:28px}.sim-head span{font-size:18px}}
+@media(max-width:480px){.subtitle{font-size:17px}.desc-box{min-height:86px}.badge{font-size:20px;margin-right:10px;min-width:60px}.desc{font-size:15.5px}.action,.reset{min-height:82px}.action,.reset{font-size:17px}.reset{min-width:100px;padding:0 14px}.action{padding:0 12px}.action img{height:48px;width:48px}.stage svg{padding:8px}}
 </style>
 </head>
 <body>
-<script>if(new URLSearchParams(location.search).has('embed'))document.documentElement.classList.add('embed');</script>
+<script>const _q=new URLSearchParams(location.search);
+if(_q.has('embed'))document.documentElement.classList.add('embed');
+// popups show the full heading; inline on a screen the surrounding dialogue already sets it up
+if(_q.has('head'))document.documentElement.classList.add('withhead');</script>
 <div id="starfield"></div><div class="glow"></div>
 <main>
 <header class="hero">
@@ -104,11 +147,11 @@ svg text{font-family:AssistantLocal,Assistant,sans-serif}
 const A='assets/';
 const ROCK_MASS=57, EARTH_SCALE=1.45, MOON_SCALE=EARTH_SCALE/6, R=106;
 const steps=[
- {badge:'שלב 0',desc:'המאזניים בירח ובכדור הארץ ריקים ומאוזנים.',btnText:'הנח דגימת סלע',icon:'57-gram.png',rockAdded:false,weights:[],weightsMass:0,angle:0,rockMassDisplay:'לא ידועה',statusText:'ממתין לתחילת מדידה'},
- {badge:'שלב 1',desc:'דגימת הסלע הונחה בכף הימנית. המאזניים אינם מאוזנים. בכדור הארץ הכף יורדת במהירות (כוח כבידה חזק יותר), בירח באיטיות (כוח כבידה חלש יותר).',btnText:"הוסף משקולת 50ג'",icon:'50gram.png',rockAdded:true,weights:[],weightsMass:0,angle:14,rockMassDisplay:'לא ידועה',statusText:'הסלע כבד יותר'},
- {badge:'שלב 2',desc:'הוספה משקולת של 50 גרם. הכף הימנית עולה, אך עדיין המאזניים לא מאוזנים.',btnText:"הוסף משקולת 5ג'",icon:'5gram.png',rockAdded:true,weights:[50],weightsMass:50,angle:6,rockMassDisplay:'לא ידועה',statusText:'הסלע עדיין כבד יותר'},
- {badge:'שלב 3',desc:'הוספה משקולת של 5 גרם. המאזניים כמעט מאוזנים.',btnText:"הוסף משקולת 2ג'",icon:'2gram.png',rockAdded:true,weights:[50,5],weightsMass:55,angle:2,rockMassDisplay:'לא ידועה',statusText:'כמעט מאוזן'},
- {badge:'שלב 4',desc:'מאזניים מאוזנים. כשכמות חומר זהה (57 ג׳) מונחת על שתי הכפות, כוח הכבידה פועל עליהן במידה שווה – הן תחת הכבידה החזקה של כדור הארץ (חצים שחורים שווים) והן תחת הכבידה החלשה של הירח (חצים לבנים שווים).',btnText:'התחל מחדש',icon:null,rockAdded:true,weights:[50,5,2],weightsMass:57,angle:0,rockMassDisplay:'57 גרם',statusText:'שיווי משקל מושלם!'}
+ {badge:'שלב 0',desc:'המאזניים בירח ובכדור הארץ ריקים ומאוזנים.',btnText:'להניח דגימת סלע',icon:'57-gram.png',rockAdded:false,weights:[],weightsMass:0,angle:0,rockMassDisplay:'לא ידועה',statusText:'ממתין לתחילת מדידה'},
+ {badge:'שלב 1',desc:'דגימת הסלע הונחה בכף הימנית. המאזניים אינם מאוזנים. בכדור הארץ הכף יורדת במהירות (כוח כבידה חזק יותר), בירח באיטיות (כוח כבידה חלש יותר).',btnText:'להוסיף משקולת 50 גרם',icon:'50gram.png',rockAdded:true,weights:[],weightsMass:0,angle:14,rockMassDisplay:'לא ידועה',statusText:'הסלע כבד יותר'},
+ {badge:'שלב 2',desc:'הוספה משקולת של 50 גרם. הכף הימנית עולה, אך עדיין המאזניים לא מאוזנים.',btnText:'להוסיף משקולת 5 גרם',icon:'5gram.png',rockAdded:true,weights:[50],weightsMass:50,angle:6,rockMassDisplay:'לא ידועה',statusText:'הסלע עדיין כבד יותר'},
+ {badge:'שלב 3',desc:'הוספה משקולת של 5 גרם. המאזניים כמעט מאוזנים.',btnText:'להוסיף משקולת 2 גרם',icon:'2gram.png',rockAdded:true,weights:[50,5],weightsMass:55,angle:2,rockMassDisplay:'לא ידועה',statusText:'כמעט מאוזן'},
+ {badge:'שלב 4',desc:'מאזניים מאוזנים. כשכמות חומר זהה (57 גרם) מונחת על שתי הכפות, כוח הכבידה פועל עליהן במידה שווה – הן תחת הכבידה החזקה של כדור הארץ (חצים שחורים שווים) והן תחת הכבידה החלשה של הירח (חצים לבנים שווים).',btnText:'להתחיל מחדש',icon:null,rockAdded:true,weights:[50,5,2],weightsMass:57,angle:0,rockMassDisplay:'57 גרם',statusText:'שיווי משקל מושלם!'}
 ];
 const weightLayout={1:[[50,0]],2:[[50,-10],[5,10]],3:[[50,-15],[5,0],[2,15]]};
 const weightImg={50:{src:'50gram.png',size:32},5:{src:'5gram.png',size:22},2:{src:'2gram.png',size:18}};
@@ -116,7 +159,7 @@ const state={earth:null,moon:null};
 function forceArrow(mass,env,showText){
  if(!mass)return `<g class="force-arrow hidden"><line/><polygon/></g>`;
  const earth=env==='earth',color=earth?'#000000':'#FFFFFF',len=mass*(earth?EARTH_SCALE:MOON_SCALE)*(earth?1:.85),force=((mass/1000)*(earth?9.8:1.63)).toFixed(2);
- return `<g class="force-arrow hidden"><line x1="0" y1="0" x2="0" y2="${len}" stroke="${color}" stroke-width="3.5" stroke-linecap="round"/><polygon points="-5,${len} 5,${len} 0,${len+7}" fill="${color}"/>${showText?`<text x="0" y="${len+21}" text-anchor="middle" font-size="12" font-weight="400" fill="${color}">${force}N (${mass}ג')</text>`:''}</g>`;
+ return `<g class="force-arrow hidden"><line x1="0" y1="0" x2="0" y2="${len}" stroke="${color}" stroke-width="3.5" stroke-linecap="round"/><polygon points="-5,${len} 5,${len} 0,${len+7}" fill="${color}"/>${showText?`<text x="0" y="${len+22}" text-anchor="middle" font-size="14" font-weight="400" fill="${color}">${force}N (${mass} גרם)</text>`:''}</g>`;
 }
 function buildScale(env){
  const svg=document.getElementById(env+'-svg');
@@ -147,7 +190,9 @@ function updateScale(env,step,animate=true){
 function renderText(step){
  document.getElementById('badge').textContent=step.badge;
  const d=document.getElementById('desc');d.style.opacity='0';d.style.transform='translateY(4px)';setTimeout(()=>{d.textContent=step.desc;d.style.opacity='1';d.style.transform='translateY(0)'},120);
- document.getElementById('actionText').textContent=step.btnText;
+ // keep a number glued to the word after it ("50 גרם"), so the button never
+ // breaks the amount away from its unit; source strings stay plain for translation
+ document.getElementById('actionText').textContent=step.btnText.replace(/(\d)\s+(?=\S)/g,'$1\u00A0');
  const ai=document.getElementById('actionIcon');if(step.icon){ai.src=A+step.icon;ai.style.display='block'}else ai.style.display='none';
  document.getElementById('rockMass').textContent=step.rockMassDisplay;document.getElementById('weightsMass').textContent=step.weightsMass+' גרם';document.getElementById('status').textContent=step.statusText;
 }
