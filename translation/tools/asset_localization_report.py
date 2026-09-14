@@ -58,6 +58,37 @@ ASSETS = [
             "is exported from Moon_2.psd."
         ),
     },
+    {
+        "file": "assets/video/video_slide_1.mp4",
+        "bakedText": "גל / מפקד תחנת העגינה, שירה / מדענית חומרים (name tags) + Hebrew voice-over",
+        "usedInScreens": ["screen-2"],
+        "note": (
+            "The two character name tags animate in as part of the render, so the live "
+            ".nametag overlays were removed from index.html to avoid duplicate text. "
+            "An Arabic version needs a re-render (name tags + voice-over). The on-screen "
+            "captions are NOT baked in — they are live HTML in div.vcap-src and are "
+            "already in the manifest, so only the cue TIMINGS need re-checking if the "
+            "Arabic render has a different length."
+        ),
+    },
+    {
+        "file": "assets/video/video_slide_11.mp4",
+        "bakedText": "Hebrew voice-over (no on-screen text)",
+        "usedInScreens": ["screen-11"],
+        "note": (
+            "Needs an Arabic voice-over re-render. Captions are live HTML (div.vcap-src); "
+            "re-check the data-t cue times against the new audio."
+        ),
+    },
+    {
+        "file": "assets/video/video_slide_21.mp4",
+        "bakedText": "Hebrew voice-over (no on-screen text)",
+        "usedInScreens": ["screen-21"],
+        "note": (
+            "Needs an Arabic voice-over re-render. Captions are live HTML (div.vcap-src); "
+            "re-check the data-t cue times against the new audio."
+        ),
+    },
 ]
 
 

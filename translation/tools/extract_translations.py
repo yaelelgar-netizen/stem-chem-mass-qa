@@ -98,6 +98,8 @@ TYPE_RULES = [
     ("report__row", "table-cell"),
     ("dtable__cap", "table-header"),
     ("dtable", "table-cell"),
+    ("gtable__tab", "label"),
+    ("gtable", "table-cell"),
     ("hl-label", "label"),
     ("nametag", "label"),
     ("tabpanel", "popup-text"),
@@ -173,6 +175,9 @@ ID_TAG_ABBREV = {
     "feedback": "FB",
     "feedback-correct": "FBCORR",
     "feedback-incorrect": "FBINCORR",
+    "feedback-partial": "FBPART",
+    "feedback-none": "FBNONE",
+    "feedback-answer": "FBANS",
     "narration": "NARR",
     "text": "TEXT",
     "button": "BTN",
@@ -246,6 +251,12 @@ def extract_leaves(el, screen_root, results, seen_ids):
     if not hasattr(el, "name") or el.name in ("script", "style", "template"):
         return
     if el.get("id") in EXCLUDED_IDS:
+        return
+    # div.vcap-src is a run of <span data-t> caption cues. It looks like a prose
+    # container whose spans are styling runs, so the generic walker would grab the
+    # whole run as one untimed blob *in addition to* the per-cue entries that
+    # extract_captions() already produces. Leave it to extract_captions().
+    if "vcap-src" in (el.get("class") or []):
         return
 
     text = norm(el.get_text(separator=" ", strip=True))
@@ -334,6 +345,15 @@ def extract_attributes(section, results, seen_attr_ids):
             results.append((el, val, attr_type))
 
 
+EXTRA_FB_ATTRS = [
+    # fill-in (dropdown) questions: when attempts run out the learner sees a
+    # partial/nothing-right message before asking for the answers
+    ("data-fb-partial", "feedback-partial"),
+    ("data-fb-none", "feedback-none"),
+    ("data-fb-answer", "feedback-answer"),
+]
+
+
 def extract_feedback(smeta, screen_id, entries):
     """The correct/incorrect feedback shown after answering lives as
     data-fb-correct / data-fb-incorrect attributes on the .smeta element,
@@ -341,6 +361,10 @@ def extract_feedback(smeta, screen_id, entries):
     is populated from these by script.js at runtime."""
     if smeta is None:
         return
+    for attr, kind in EXTRA_FB_ATTRS:
+        val = smeta.get(attr)
+        if val:
+            entries.append({"_type": kind, "_source": norm(val), "_locator": "attr:%s on .smeta" % attr})
     fb_correct = smeta.get("data-fb-correct")
     fb_incorrect = smeta.get("data-fb-incorrect")
     if not fb_correct and not fb_incorrect:
