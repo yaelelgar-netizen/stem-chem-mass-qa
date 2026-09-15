@@ -764,7 +764,7 @@ body.modal-open .navbtn{ visibility:hidden !important; }
    back above it rather than pushing the art to a negative layer (the title has to
    sit on the opaque green band). */
 .report--art .report__title,.report--art .report__head,.report--art .report__row{ position:relative; z-index:1; }
-/* The four-row report (screens 12/15/18/24) over its own export. Unlike the three-row
+/* The four-row report (screens 11/14/17/23) over its own export. Unlike the three-row
    plates this one carries a navy header band in the artwork, so .report__head gets a
    band of its own. Bands are the PNG's own pixel rows scaled by 400/358 -- the plate is
    authored 358x419 and laid out 400x468, which is the same ratio on both axes:
@@ -854,7 +854,7 @@ body.modal-open .navbtn{ visibility:hidden !important; }
 .panel__close img{ width:100%; height:100%; }
 .panel__close:focus-visible{ outline:var(--focus); outline-offset:2px; }
 
-/* --- tabbed info panels (screen 8, מד-הכוח) -------------------------
+/* --- tabbed info panels (מד-הכוח popup, screen 7) -------------------------
    Built on the approved art: panel-11-tab.png for the closed pill and
    panel-11-open.png for the drawer that drops under it. Both are placed at
    their native 381px width so nothing is resampled. */
