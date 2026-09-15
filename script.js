@@ -58,10 +58,20 @@
 
   /* ---------- 1. STAGE SCALING (fit 1920×1080 to the viewport) ---------- */
   function fit() {
-    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
-    stage.style.setProperty('--scale', s);
+    var w = window.innerWidth, h = window.innerHeight;
+    // Measured at zero -- the lomda is in an iframe/panel that has no layout box yet
+    // (a QA host mounting it inside a hidden container, a background tab). Writing
+    // --scale:0 here would collapse the whole stage to nothing, and since the screens
+    // only "disappear" rather than error it looks like the lomda failed to load. Keep
+    // the last good scale and wait for a real measurement instead.
+    if (!w || !h) return;
+    stage.style.setProperty('--scale', Math.min(w / 1920, h / 1080));
   }
   window.addEventListener('resize', fit);
+  // Revealing a hidden iframe (display:none -> visible) resizes the document without
+  // firing a window resize event, so `resize` alone would leave the stage collapsed.
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(document.documentElement);
+  window.addEventListener('pageshow', fit);   // restored from the back/forward cache
   fit();
 
   /* ---------- 2. NAVIGATION ---------- */
@@ -208,6 +218,7 @@
   if (btnFwd)  btnFwd.addEventListener('click', next);
   if (btnBack) btnBack.addEventListener('click', prev);
   document.addEventListener('keydown', function (e) {
+    if (document.body.classList.contains('modal-open')) return;   // a screen-sized popup owns the keyboard
     if (e.key === 'ArrowLeft')  next();   // RTL: left = forward
     if (e.key === 'ArrowRight') prev();
   });
@@ -804,10 +815,17 @@
   Array.prototype.forEach.call(document.querySelectorAll('[data-modal]'), function (btn) {
     var m = document.getElementById(btn.getAttribute('data-modal'));
     if (!m) return;
-    btn.addEventListener('click', function () { m.hidden = false; btn.classList.add('method-used'); });
-    m.addEventListener('click', function (e) { if (e.target === m) m.hidden = true; });
+    // A .screenmodal is a screen-sized popup standing in for what used to be its own
+    // screen (מד-הכוח). While it is open the lomda must not be navigable behind it, so
+    // it flags the body: that hides the global arrows and mutes the arrow keys.
+    function show(open) {
+      m.hidden = !open;
+      if (m.classList.contains('screenmodal')) document.body.classList.toggle('modal-open', open);
+    }
+    btn.addEventListener('click', function () { show(true); btn.classList.add('method-used'); });
+    m.addEventListener('click', function (e) { if (e.target === m) show(false); });
     var x = m.querySelector('.modal__close');
-    if (x) x.addEventListener('click', function () { m.hidden = true; });
+    if (x) x.addEventListener('click', function () { show(false); });
   });
 
   /* ---------- GLOSSARY TOOLTIPS (a link inline with a label's text toggles a short-definition bubble) ---------- */

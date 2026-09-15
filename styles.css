@@ -468,10 +468,34 @@ body{
 .appletmodal .modal__box iframe{ height:920px; border-radius:24px; overflow:hidden; background:transparent; }
 #scale-modal .modal__box{ width:1560px; }
 #scale-modal .modal__box iframe{ height:940px; }
-.appletmodal .modal__close{ left:-30px; top:-30px; width:104px; height:104px;
+/* screen 4's gravity gloss popup opens straight over the running applet and the
+   banner text, which both read through the plain dim overlay -- blur the backdrop
+   so only the popup card is legible while it is open */
+#grav-modal{ -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); }
+
+/* SCREEN-SIZED POPUP (מד-הכוח, opened from screen 7's "מד כוח" link).
+   Its content is authored in full 1920x1080 stage coordinates -- the same layout it
+   had while it was still a screen -- so rather than re-placing every element, the
+   inner box keeps that coordinate space and is scaled down as one piece. That leaves
+   a margin of backdrop all round, which is what makes it read as a popup and not as
+   another screen, and the card itself is black (not the lab photo) for the same reason. */
+.screenmodal{ background:rgba(0,0,0,.72); }
+.screenmodal .modal__box{ width:1728px; height:972px; max-width:none; }
+/* the clip lives here, not on .modal__box, so the ✕ hanging off the corner survives it.
+   The card is a later sibling than the ✕, so without the z-index below it paints over
+   the half of the ✕ that overlaps the corner and leaves only a sliver showing. */
+.screenmodal__stage{ position:absolute; inset:0; background:#000;
+  border-radius:28px; overflow:hidden; box-shadow:0 24px 70px rgba(0,0,0,.55); }
+.screenmodal .modal__close{ z-index:2; }
+.screenmodal__inner{ position:absolute; left:0; top:0; width:1920px; height:1080px;
+  transform:scale(.9); transform-origin:0 0; }
+/* a screen-sized popup stands in for a screen: the global arrows must not show
+   through it (updateChrome sets their visibility inline, hence !important) */
+body.modal-open .navbtn{ visibility:hidden !important; }
+.appletmodal .modal__close, .screenmodal .modal__close{ left:-30px; top:-30px; width:104px; height:104px;
   background:none; border:0; border-radius:50%; padding:0; }
-.appletmodal .modal__close img{ width:100%; height:100%; display:block; }
-.appletmodal .modal__close:hover{ background:none; filter:brightness(1.12); }
+.appletmodal .modal__close img, .screenmodal .modal__close img{ width:100%; height:100%; display:block; }
+.appletmodal .modal__close:hover, .screenmodal .modal__close:hover{ background:none; filter:brightness(1.12); }
 .modal__box iframe{ width:100%; height:1000px; border:0; display:block; background:transparent; }
 .modal__close{ position:absolute; left:-18px; top:-18px; width:54px; height:54px; border-radius:50%;
   background:#0f2740; color:#fff; border:3px solid #fff; font-size:26px; font-weight:800; cursor:pointer; }
@@ -739,7 +763,16 @@ body{
 /* .report__bg is positioned, so it paints over in-flow siblings; lift the text
    back above it rather than pushing the art to a negative layer (the title has to
    sit on the opaque green band). */
-.report--art .report__title,.report--art .report__row{ position:relative; z-index:1; }
+.report--art .report__title,.report--art .report__head,.report--art .report__row{ position:relative; z-index:1; }
+/* The four-row report (screens 12/15/18/24) over its own export. Unlike the three-row
+   plates this one carries a navy header band in the artwork, so .report__head gets a
+   band of its own. Bands are the PNG's own pixel rows scaled by 400/358 -- the plate is
+   authored 358x419 and laid out 400x468, which is the same ratio on both axes:
+     table-samples-report.png (358x419) strip 25 -> green 25-154 -> head 154-201
+       -> rows 201-248-295-342-389, then the baked bottom edge and shadow. */
+.report--4row.report--art .report__title{ background:none; margin-top:27.9px; height:144.1px; }
+.report--4row.report--art .report__head{ background:none; height:52.5px; }
+.report--4row.report--art .report__row{ height:52.5px; border-top:0; }
 /* the outlier reading is set heavier on both plates (Gfx/29, Gfx/30) */
 .report__row .val--flag{ font-weight:800; }
 /* the value cell floats in on its own once the matching bubble has landed */
