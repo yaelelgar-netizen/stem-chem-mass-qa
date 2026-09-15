@@ -263,10 +263,12 @@ body{
 }
 /* once the experiment is done, the applet settles down + smaller so Shira's summary fits above it */
 .applet-frame.applet-settled{ transform:translateY(45px) scale(0.88); transform-origin:bottom center; }
-/* screens 4 and 9 have nothing held back to make room for, and their applets are
-   sized to a fixed box in the layout — so they must not shrink once the run is done */
-.screen[data-screen="4"] .applet-frame.applet-settled,
-.screen[data-screen="9"] .applet-frame.applet-settled{ transform:none; }
+/* An applet marked data-fixed-height is sized to a fixed box in the layout and fits
+   itself to that box, and has nothing held back to make room for — so it must not shrink
+   once the run is done. Keyed on the marker rather than on screen numbers: this rule used
+   to name data-screen 4 and 9, and silently stopped matching the מאזניים applet the moment
+   the screens were renumbered, which let it shrink after use. */
+.applet-frame[data-fixed-height].applet-settled{ transform:none; }
 
 /* ---------------------------------------------------------------
    QUESTION + OPTIONS (single choice)
