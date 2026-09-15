@@ -80,10 +80,17 @@
     Array.prototype.forEach.call(document.querySelectorAll('audio'), function (a) { try { a.pause(); } catch (e) {} });
     if (screens[current]._onLeave) screens[current]._onLeave();
     screens[current].classList.remove('active');
+    screens[current].classList.remove('is-active');   // keep the QA tool's spelling in step
     screens[current].setAttribute('aria-hidden', 'true');
     current = i;
     screens[current].classList.add('active');
+    screens[current].classList.add('is-active');
     screens[current].setAttribute('aria-hidden', 'false');
+    // The QA review tool hard-forces screens with inline display:none!important (and can
+    // set [hidden]); both outrank our stylesheet, so a screen it hid once could never be
+    // shown again by our own navigation. Clear them on the screen we are activating.
+    screens[current].style.removeProperty('display');
+    screens[current].hidden = false;
     if (btnFwd) btnFwd.classList.remove('nav-pulse');
     if (screens[current].getAttribute('data-type') === 'end') showScore();
     revealScreen(screens[current]);   // run first: resets per-visit gate flags (e.g. _dialogueDone) before chrome reads them
@@ -214,6 +221,25 @@
   }
   function next() { if (btnFwd && btnFwd.disabled) return; goTo(step(1)); }
   function prev() { if (btnBack && btnBack.disabled) return; goTo(step(-1)); }
+
+  // The QA review tool can activate a screen straight in the DOM -- it adds .is-active
+  // and sets display:none!important on the siblings -- without calling goTo. That would
+  // leave `current` stale, the gates reading the wrong screen, and the target's float-in
+  // content still at opacity:0. Mirror its choice back into our own state so the reviewer
+  // sees a fully rendered screen either way. goTo re-adds .is-active, but by then the
+  // element IS screens[current], so this does not loop.
+  if (window.MutationObserver) {
+    var qaSync = new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var el = muts[i].target;
+        if (el.classList && el.classList.contains('is-active') && el !== screens[current]) {
+          var idx = screens.indexOf(el);
+          if (idx > -1) { goTo(idx); return; }
+        }
+      }
+    });
+    screens.forEach(function (s) { qaSync.observe(s, { attributes: true, attributeFilter: ['class'] }); });
+  }
 
   if (btnFwd)  btnFwd.addEventListener('click', next);
   if (btnBack) btnBack.addEventListener('click', prev);
